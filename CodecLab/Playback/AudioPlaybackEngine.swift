@@ -26,6 +26,15 @@ final class AudioPlaybackEngine: ObservableObject {
         deckPrimed = false
     }
 
+    func removeBuffer(for source: MonitorSource) {
+        buffers[source] = nil
+        if activeSource == source {
+            stop()
+        } else {
+            deckPrimed = false
+        }
+    }
+
     func canPlay(_ source: MonitorSource) -> Bool {
         buffers[source] != nil
     }

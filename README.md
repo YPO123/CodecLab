@@ -18,12 +18,14 @@ This repository currently contains the first SwiftUI prototype:
 - Metadata display for sample rate, bit depth, channel count, duration, codec, and lossy source warnings
 - 10/15/30/60 second test region selection
 - FFmpeg diagnostics with `libmp3lame`, AAC, and Opus availability checks
-- Plugin-style codec audition rail with Lossless A vs Lossy B monitoring
+- Plugin-style codec matrix rail with Lossless A vs Lossy B monitoring
 - MP3 / AAC / Opus lossy monitor rendering from the same rail
-- Bitrate slider for freeform codec combinations instead of fixed presets
+- Matching format and bitrate rail controls for freeform codec combinations instead of fixed presets
 - Legacy MP3 import and decode path
 - Synchronized multi-node playback switching through `AVAudioEngine`
-- Null-test and ABX service foundations
+- Null-test residual analysis with exportable Difference WAV output
+- ABX service foundations
+- Export packages with encoded audio plus HTML and JSON reports
 
 ## Why "Current MP3"?
 

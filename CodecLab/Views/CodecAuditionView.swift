@@ -5,11 +5,12 @@ struct CodecAuditionView: View {
     @ObservedObject var model: CodecLabViewModel
     @ObservedObject var playbackEngine: AudioPlaybackEngine
     @State private var isLegacyImporterPresented = false
+    private let bitrateSteps = [64, 96, 128, 160, 192, 256, 320]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .firstTextBaseline) {
-                Label("Codec Audition Rail", systemImage: "slider.horizontal.below.rectangle")
+                Label("Codec Matrix Rail", systemImage: "slider.horizontal.below.rectangle")
                     .font(.system(size: 15, weight: .semibold))
                 Spacer()
                 HStack(spacing: 8) {
@@ -39,14 +40,13 @@ struct CodecAuditionView: View {
                 )
             }
 
-            codecRail
-            bitrateRail
+            auditionControlRail
 
             HStack(spacing: 10) {
                 Button {
                     Task { await model.renderSelectedLossyMonitor() }
                 } label: {
-                    Label("Render Lossy Monitor", systemImage: "waveform.path.ecg")
+                    Label("Render Monitor", systemImage: "waveform.path.ecg")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
@@ -55,7 +55,7 @@ struct CodecAuditionView: View {
                 Button {
                     isLegacyImporterPresented = true
                 } label: {
-                    Label("Load Legacy", systemImage: "clock.arrow.circlepath")
+                    Label("Import Legacy", systemImage: "clock.arrow.circlepath")
                         .frame(width: 130)
                 }
                 .buttonStyle(.bordered)
@@ -83,90 +83,69 @@ struct CodecAuditionView: View {
         }
     }
 
-    private var codecRail: some View {
-        VStack(alignment: .leading, spacing: 9) {
-            HStack {
-                Text("Rail")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(CodecLabStyle.secondaryText)
-                Spacer()
-                Text("Lossless first, then audition any lossy monitor")
-                    .font(.system(size: 11))
-                    .foregroundStyle(CodecLabStyle.secondaryText)
-            }
-
-            HStack(spacing: 0) {
-                railStation(
-                    title: "Lossless",
-                    symbol: "waveform",
-                    selected: playbackEngine.activeSource == .original,
-                    enabled: playbackEngine.canPlay(.original),
-                    color: CodecLabStyle.green
-                ) {
-                    model.play(.original)
-                }
-
-                railLine
-
-                ForEach(CodecRailFormat.allCases) { codec in
-                    railStation(
-                        title: codec.shortLabel,
-                        symbol: codec.systemImage,
-                        selected: model.selectedCodec == codec,
-                        enabled: isRailCodecEnabled(codec),
-                        color: model.selectedCodec == codec ? CodecLabStyle.accent : CodecLabStyle.secondaryText
+    private var auditionControlRail: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            controlRailRow(title: "Format", value: model.selectedCodec.label) {
+                HStack(spacing: 8) {
+                    controlTile(
+                        title: "Lossless",
+                        subtitle: "A",
+                        symbol: "waveform",
+                        selected: playbackEngine.activeSource == .original,
+                        enabled: playbackEngine.canPlay(.original),
+                        color: CodecLabStyle.green
                     ) {
-                        model.selectedCodec = codec
-                        if codec == .legacyMP3, playbackEngine.canPlay(.legacyMP3) {
-                            model.play(.legacyMP3)
+                        model.play(.original)
+                    }
+
+                    ForEach(CodecRailFormat.allCases) { codec in
+                        controlTile(
+                            title: codec.shortLabel,
+                            subtitle: codecSubtitle(codec),
+                            symbol: codec.systemImage,
+                            selected: model.selectedCodec == codec,
+                            enabled: isRailCodecEnabled(codec),
+                            color: model.selectedCodec == codec ? CodecLabStyle.accent : CodecLabStyle.secondaryText
+                        ) {
+                            model.selectCodec(codec)
+                            if codec == .legacyMP3, playbackEngine.canPlay(.legacyMP3) {
+                                model.play(.legacyMP3)
+                            }
                         }
                     }
-                    if codec.id != CodecRailFormat.allCases.last?.id {
-                        railLine
+                }
+            }
+
+            controlRailRow(title: "Bitrate", value: bitrateValue) {
+                HStack(spacing: 8) {
+                    ForEach(bitrateSteps, id: \.self) { bitrate in
+                        controlTile(
+                            title: "\(bitrate)",
+                            subtitle: "kbps",
+                            symbol: "speedometer",
+                            selected: model.selectedCodec != .legacyMP3 && model.roundedBitrateKbps == bitrate,
+                            enabled: model.selectedCodec != .legacyMP3,
+                            color: CodecLabStyle.amber
+                        ) {
+                            model.selectBitrateKbps(bitrate)
+                        }
                     }
                 }
             }
         }
-    }
-
-    private var bitrateRail: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Bitrate")
-                    .font(.system(size: 12))
-                    .foregroundStyle(CodecLabStyle.secondaryText)
-                Spacer()
-                Text(model.selectedCodec == .legacyMP3 ? "imported source" : "\(model.roundedBitrateKbps) kbps")
-                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
-            }
-
-            Slider(value: $model.selectedBitrateKbps, in: 64...320, step: 8)
-                .disabled(model.selectedCodec == .legacyMP3)
-
-            HStack {
-                Text("64")
-                Spacer()
-                Text("128")
-                Spacer()
-                Text("192")
-                Spacer()
-                Text("256")
-                Spacer()
-                Text("320")
-            }
-            .font(.system(size: 10, design: .monospaced))
-            .foregroundStyle(CodecLabStyle.secondaryText)
-        }
         .padding(12)
-        .background(CodecLabStyle.surfaceRaised)
+        .background(
+            LinearGradient(
+                colors: [CodecLabStyle.surfaceRaised, CodecLabStyle.surfaceRaised.opacity(0.72)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(CodecLabStyle.stroke, lineWidth: 1)
+        )
         .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-
-    private var railLine: some View {
-        Rectangle()
-            .fill(CodecLabStyle.stroke)
-            .frame(height: 2)
-            .frame(maxWidth: .infinity)
     }
 
     private var renderedDetail: String {
@@ -174,6 +153,10 @@ struct CodecAuditionView: View {
             return model.legacyArtifacts == nil ? "Import old MP3" : "Decoded and ready"
         }
         return model.renderedArtifacts == nil ? "Render monitor" : "Decoded PCM ready"
+    }
+
+    private var bitrateValue: String {
+        model.selectedCodec == .legacyMP3 ? "Source file" : "\(model.roundedBitrateKbps) kbps"
     }
 
     private func auditionPad(title: String, subtitle: String, detail: String, symbol: String, source: MonitorSource, color: Color) -> some View {
@@ -209,7 +192,15 @@ struct CodecAuditionView: View {
             }
             .padding(14)
             .frame(maxWidth: .infinity, minHeight: 90)
-            .background(playbackEngine.activeSource == source ? color.opacity(0.16) : CodecLabStyle.surfaceRaised)
+            .background(
+                LinearGradient(
+                    colors: playbackEngine.activeSource == source
+                        ? [color.opacity(0.20), CodecLabStyle.surfaceRaised]
+                        : [CodecLabStyle.surfaceRaised, CodecLabStyle.surfaceRaised.opacity(0.78)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(playbackEngine.activeSource == source ? color.opacity(0.85) : CodecLabStyle.stroke, lineWidth: 1)
@@ -220,27 +211,62 @@ struct CodecAuditionView: View {
         .disabled(!playbackEngine.canPlay(source))
     }
 
-    private func railStation(title: String, symbol: String, selected: Bool, enabled: Bool, color: Color, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(spacing: 6) {
-                ZStack {
-                    Circle()
-                        .fill(selected ? color.opacity(0.22) : CodecLabStyle.surfaceRaised)
-                    Circle()
-                        .stroke(selected ? color : CodecLabStyle.stroke, lineWidth: 1.2)
-                    Image(systemName: symbol)
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(enabled ? color : CodecLabStyle.secondaryText.opacity(0.55))
-                }
-                .frame(width: 42, height: 42)
-
+    private func controlRailRow<Content: View>(
+        title: String,
+        value: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
                 Text(title)
-                    .font(.system(size: 10, weight: .medium))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-                    .foregroundStyle(enabled ? CodecLabStyle.primaryText : CodecLabStyle.secondaryText.opacity(0.55))
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(CodecLabStyle.secondaryText)
+                Spacer()
+                Text(value)
+                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
             }
-            .frame(width: 62)
+
+            content()
+        }
+    }
+
+    private func controlTile(
+        title: String,
+        subtitle: String,
+        symbol: String,
+        selected: Bool,
+        enabled: Bool,
+        color: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            VStack(spacing: 5) {
+                HStack(spacing: 5) {
+                    Image(systemName: symbol)
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(enabled ? (selected ? color : CodecLabStyle.secondaryText) : CodecLabStyle.secondaryText.opacity(0.42))
+                    Text(title)
+                        .font(.system(size: 12, weight: .semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.72)
+                        .foregroundStyle(enabled ? CodecLabStyle.primaryText : CodecLabStyle.secondaryText.opacity(0.42))
+                }
+
+                Text(subtitle)
+                    .font(.system(size: 9, weight: .medium, design: .monospaced))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+                    .foregroundStyle(enabled ? CodecLabStyle.secondaryText : CodecLabStyle.secondaryText.opacity(0.42))
+            }
+            .frame(maxWidth: .infinity, minHeight: 54)
+            .padding(.horizontal, 6)
+            .background(selected ? color.opacity(0.16) : CodecLabStyle.surface.opacity(enabled ? 0.92 : 0.45))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(selected ? color.opacity(0.92) : CodecLabStyle.stroke, lineWidth: selected ? 1.2 : 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .shadow(color: selected ? color.opacity(0.12) : Color.clear, radius: 10, y: 4)
         }
         .buttonStyle(.plain)
         .disabled(!enabled)
@@ -269,5 +295,17 @@ struct CodecAuditionView: View {
             return model.diagnostics.ffmpegURL != nil
         }
     }
-}
 
+    private func codecSubtitle(_ codec: CodecRailFormat) -> String {
+        switch codec {
+        case .mp3:
+            return "LAME"
+        case .aac:
+            return "Native"
+        case .opus:
+            return "Opus"
+        case .legacyMP3:
+            return "Import"
+        }
+    }
+}

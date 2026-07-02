@@ -7,6 +7,65 @@ enum ABXSlot {
     case x
 }
 
+enum ExportPackageItem: String, CaseIterable, Identifiable, Hashable {
+    case encodedMonitor
+    case differenceWAV
+    case htmlReport
+    case jsonReport
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .encodedMonitor: return "Encoded Monitor"
+        case .differenceWAV: return "Difference WAV"
+        case .htmlReport: return "HTML Report"
+        case .jsonReport: return "JSON Report"
+        }
+    }
+
+    var detail: String {
+        switch self {
+        case .encodedMonitor: return "Current lossy file"
+        case .differenceWAV: return "Residual audio after Null Test"
+        case .htmlReport: return "Readable listening report"
+        case .jsonReport: return "Structured test data"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .encodedMonitor: return "waveform.path.ecg"
+        case .differenceWAV: return "plus.forwardslash.minus"
+        case .htmlReport: return "doc.richtext"
+        case .jsonReport: return "curlybraces.square"
+        }
+    }
+
+    var badge: String {
+        switch self {
+        case .encodedMonitor: return "AUDIO"
+        case .differenceWAV: return "WAV"
+        case .htmlReport: return "HTML"
+        case .jsonReport: return "JSON"
+        }
+    }
+}
+
+enum ExportPackageError: LocalizedError {
+    case noReadyItems
+    case missingReport
+
+    var errorDescription: String? {
+        switch self {
+        case .noReadyItems:
+            return "Nothing is ready to export yet."
+        case .missingReport:
+            return "Load a reference file before exporting a report."
+        }
+    }
+}
+
 @MainActor
 final class CodecLabViewModel: ObservableObject {
     @Published var referenceInfo: AudioFileInfo?
@@ -31,6 +90,7 @@ final class CodecLabViewModel: ObservableObject {
     private let encoderService = EncoderService()
     private let legacyImportService = LegacyMP3ImportService()
     private let nullTestService = NullTestService()
+    private let reportExportService = ReportExportService()
 
     init() {
         Task {
@@ -66,8 +126,20 @@ final class CodecLabViewModel: ObservableObject {
     }
 
     func generateCurrentMP3() async {
-        selectedCodec = .mp3
+        selectCodec(.mp3)
         await renderSelectedLossyMonitor()
+    }
+
+    func selectCodec(_ codec: CodecRailFormat) {
+        guard selectedCodec != codec else { return }
+        selectedCodec = codec
+        invalidateRenderedMonitor()
+    }
+
+    func selectBitrateKbps(_ bitrate: Int) {
+        guard roundedBitrateKbps != bitrate else { return }
+        selectedBitrateKbps = Double(bitrate)
+        invalidateRenderedMonitor()
     }
 
     func renderSelectedLossyMonitor() async {
@@ -129,10 +201,15 @@ final class CodecLabViewModel: ObservableObject {
         }
 
         do {
-            nullTestResult = try nullTestService.analyze(
+            let result = try nullTestService.analyze(
                 originalURL: renderedArtifacts.originalSegmentURL,
-                decodedURL: renderedArtifacts.decodedWAVURL
+                decodedURL: renderedArtifacts.decodedWAVURL,
+                differenceOutputURL: renderedArtifacts.workingDirectory.appendingPathComponent("CodecLab Difference.wav")
             )
+            nullTestResult = result
+            if let differenceFileURL = result.differenceFileURL {
+                playbackEngine.setBuffer(PlaybackBuffer(source: .difference, url: differenceFileURL, displayName: "Difference WAV"))
+            }
             statusMessage = "Null Test complete."
         } catch {
             statusMessage = error.localizedDescription
@@ -216,6 +293,49 @@ final class CodecLabViewModel: ObservableObject {
         }
     }
 
+    func isExportItemReady(_ item: ExportPackageItem) -> Bool {
+        switch item {
+        case .encodedMonitor:
+            return renderedArtifacts != nil
+        case .differenceWAV:
+            return nullTestResult?.differenceFileURL != nil
+        case .htmlReport, .jsonReport:
+            return referenceInfo != nil
+        }
+    }
+
+    func currentReport() -> TestReport? {
+        guard let referenceInfo else { return nil }
+        return TestReport(
+            createdAt: Date(),
+            reference: referenceInfo,
+            region: boundedRegion(for: referenceInfo),
+            encodeSettings: renderedArtifacts?.settings,
+            nullTestResult: nullTestResult,
+            abxSession: abxService.session,
+            monitorMode: monitorMode.label,
+            notes: nil
+        )
+    }
+
+    @discardableResult
+    func exportPackage(to directory: URL, include items: Set<ExportPackageItem>) throws -> URL {
+        let readyItems = Set(items.filter { isExportItemReady($0) })
+        guard !readyItems.isEmpty else { throw ExportPackageError.noReadyItems }
+
+        let fileManager = FileManager.default
+        let outputFolder = directory.appendingPathComponent(exportFolderName(), isDirectory: true)
+        try fileManager.createDirectory(at: outputFolder, withIntermediateDirectories: true)
+
+        let baseName = exportBaseName
+        for item in ExportPackageItem.allCases where readyItems.contains(item) {
+            try export(item, baseName: baseName, to: outputFolder)
+        }
+
+        statusMessage = "Exported package: \(outputFolder.lastPathComponent)"
+        return outputFolder
+    }
+
     private func performBusyOperation(_ message: String, operation: @escaping () async throws -> Void) async {
         isBusy = true
         statusMessage = message
@@ -226,6 +346,73 @@ final class CodecLabViewModel: ObservableObject {
         } catch {
             statusMessage = error.localizedDescription
         }
+    }
+
+    private func invalidateRenderedMonitor() {
+        currentArtifacts = nil
+        renderedArtifacts = nil
+        nullTestResult = nil
+        abxService.reset()
+        playbackEngine.removeBuffer(for: .currentMP3)
+        playbackEngine.removeBuffer(for: .difference)
+    }
+
+    private var exportBaseName: String {
+        guard let referenceInfo else { return "CodecLab" }
+        let stem = (referenceInfo.fileName as NSString).deletingPathExtension
+        return safeFileName(stem.isEmpty ? "CodecLab" : stem)
+    }
+
+    private func exportFolderName() -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyyMMdd-HHmmss"
+        return "CodecLab_Export_\(exportBaseName)_\(formatter.string(from: Date()))"
+    }
+
+    private func export(_ item: ExportPackageItem, baseName: String, to outputFolder: URL) throws {
+        switch item {
+        case .encodedMonitor:
+            guard let renderedArtifacts else { return }
+            let displayName = safeFileName(renderedArtifacts.displayName.replacingOccurrences(of: " ", with: "-"))
+            let fileExtension = renderedArtifacts.encodedURL.pathExtension.isEmpty
+                ? renderedArtifacts.settings.format.rawValue
+                : renderedArtifacts.encodedURL.pathExtension
+            let destination = outputFolder.appendingPathComponent("\(baseName)-\(displayName).\(fileExtension)")
+            try copyReplacingItem(at: renderedArtifacts.encodedURL, to: destination)
+
+        case .differenceWAV:
+            guard let differenceURL = nullTestResult?.differenceFileURL else { return }
+            let destination = outputFolder.appendingPathComponent("\(baseName)-Difference.wav")
+            try copyReplacingItem(at: differenceURL, to: destination)
+
+        case .htmlReport:
+            guard let report = currentReport() else { throw ExportPackageError.missingReport }
+            let destination = outputFolder.appendingPathComponent("\(baseName)-CodecLab-Report.html")
+            try reportExportService.html(for: report).write(to: destination, atomically: true, encoding: .utf8)
+
+        case .jsonReport:
+            guard let report = currentReport() else { throw ExportPackageError.missingReport }
+            let destination = outputFolder.appendingPathComponent("\(baseName)-CodecLab-Report.json")
+            try reportExportService.jsonData(for: report).write(to: destination, options: .atomic)
+        }
+    }
+
+    private func copyReplacingItem(at source: URL, to destination: URL) throws {
+        let fileManager = FileManager.default
+        if fileManager.fileExists(atPath: destination.path) {
+            try fileManager.removeItem(at: destination)
+        }
+        try fileManager.copyItem(at: source, to: destination)
+    }
+
+    private func safeFileName(_ value: String) -> String {
+        let invalidCharacters = CharacterSet(charactersIn: "/\\:?%*|\"<>")
+        let cleaned = value
+            .components(separatedBy: invalidCharacters)
+            .joined(separator: "-")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return cleaned.isEmpty ? "CodecLab" : cleaned
     }
 }
 
