@@ -1,0 +1,634 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		017598AA455BB52F80C1DCEA /* TestReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2458FC32B80C2D5FBC7B0A27 /* TestReport.swift */; };
+		0A7EE77A49A87F88436E6F9C /* AlignmentServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7FEF9462EB05D46B65DBD7 /* AlignmentServiceTests.swift */; };
+		0D31E7255B3F9C78651E3E41 /* CodecLabStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23272977E05E49BC923D9A96 /* CodecLabStyle.swift */; };
+		1568B8D671E854FAD31A43C3 /* EncoderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E117814016AC62A0ADEF2AD /* EncoderService.swift */; };
+		1F19D892FB31BB1F9FF73F37 /* CodecLabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A3E4A3295EFAC1EBB822E3 /* CodecLabViewModel.swift */; };
+		2F42A1D3736734F824DD7F41 /* AudioImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D07C45255E9EE3327B1A726 /* AudioImportService.swift */; };
+		2FFF1C9850D9988C28743AB7 /* EncoderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A67AFA25643091F72E2958 /* EncoderType.swift */; };
+		313C47EE26B5C344FC853F45 /* FFmpegService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82062888EEFBA81965A651A7 /* FFmpegService.swift */; };
+		3A712C28FFDB929AF6072ACE /* TestRegionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A91834491A4F17AFE0045B /* TestRegionView.swift */; };
+		42AA97164FA9E2D047B5B2A5 /* CodecPresetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903BEF56395E211B18B627E5 /* CodecPresetView.swift */; };
+		4CB1293AB8D4DA326320971D /* WAVExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3392D65661DA9B922751A1A /* WAVExportService.swift */; };
+		50865B491FEF4C65B3BEC9BC /* MonitorDownmixService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A339F46A59BC6EB41D2408 /* MonitorDownmixService.swift */; };
+		58A5F92B0726E40261F346E4 /* NullTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE9AFA64F11DAFC10CDBD07D /* NullTestView.swift */; };
+		71B07A762B728AA762E25338 /* AlignmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB7167001B765A982EBC778 /* AlignmentService.swift */; };
+		7B862FF5A80259386B7A116E /* AudioFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF19A7D5EA345C169A6BD6E /* AudioFileInfo.swift */; };
+		7BADFF0AFD84E433366BE05C /* PlaybackBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3A450E3F2B7762A232545 /* PlaybackBuffer.swift */; };
+		7CA794B90A4A3DAF6D522F68 /* LegacyMP3ImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0349C5EAB48F99D302B90B0C /* LegacyMP3ImportService.swift */; };
+		80754FD1B0F2D1B661EBEA1E /* ABXView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 125C948B7AECBF755ED9FE1E /* ABXView.swift */; };
+		83BF7671C69E5E390EFF2083 /* NullTestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE5FF39A7D067C31A2B83874 /* NullTestResult.swift */; };
+		8AE600F972A4660BD7CD2857 /* EncoderAvailabilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18D660D777C5C6F93FA18009 /* EncoderAvailabilityService.swift */; };
+		8BB69382C10DE027229AC381 /* NullTestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C530F1E5E86B5BFF24F7A4D9 /* NullTestService.swift */; };
+		903262BE403A4F360C8B6D5D /* FFprobeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB3BAE5682D345AC31142BA /* FFprobeService.swift */; };
+		961DD8832E619BFDB30AE581 /* CodecFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4389B229C37BF435635BC797 /* CodecFormat.swift */; };
+		99818D407477A2B12FF7FB06 /* LoopRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6045C86A14D8C2AD79C62E1F /* LoopRegion.swift */; };
+		A01022FDC22FCD811A062E9F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E3D529728832EB1BF311F91 /* SettingsView.swift */; };
+		A6F9C8B65145F8E5042B25BA /* TestRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2AD24D5150A241E8BBFC4FD /* TestRegion.swift */; };
+		A7062763A5C16FB6D3BF3926 /* ExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745AE1769AF1D40C530CBC39 /* ExportView.swift */; };
+		AD4FC28CCE782245671EFE2A /* EncoderStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45BE630B5F84FE56C5D06DA0 /* EncoderStatusView.swift */; };
+		B072479FDFE8F807AD51F08B /* MultichannelBufferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA71847137A75696E65524E5 /* MultichannelBufferService.swift */; };
+		B2A9FE466C84A69D75B38E10 /* ABXService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87AA065572C4FBA9927808CB /* ABXService.swift */; };
+		B4641BA5072AC502700241AA /* CodecLabApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B140E03139EBE01EEB86C8D /* CodecLabApp.swift */; };
+		B77BC3B0D6F3494B4D13B4CF /* DropZoneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CC3CE56B3C3C5F82B9E27F /* DropZoneView.swift */; };
+		B89845D4E304D13B1123B5A5 /* ABXServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D9C94F4A7DA89C474B11621 /* ABXServiceTests.swift */; };
+		BD27B4121A5AB099F891635F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F0D9D2FA1AE880F019C6B70F /* Assets.xcassets */; };
+		C499D3E645F8904371516111 /* FileInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD64864C538CE0541EFBA50 /* FileInfoView.swift */; };
+		CCC75C2BDCEED7802D8B5C86 /* AudioPlaybackEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5C01031FA805322BA00BFFC /* AudioPlaybackEngine.swift */; };
+		CE741F6AE8B381BBDDE02E7B /* ABXSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A4CBD8C4CA5148B62A42EF8 /* ABXSession.swift */; };
+		DA30EFFA524E85E0A5B81B47 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = D32B34D958B139DFD4E90857 /* README.md */; };
+		E850B72AC14421B22DC9F523 /* AudioDecodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9A611BBE8D317CAA7FF0E6 /* AudioDecodeService.swift */; };
+		EC32457115D585C89606B4DD /* EncodeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5860CF0428A5F50030214879 /* EncodeSettings.swift */; };
+		F6DAECAD2D9BE0A64F95A496 /* CodecPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = BADE0C7031BD37DAA17B3C70 /* CodecPreset.swift */; };
+		F769E3CDBE4B6753EF67F65A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CAC84E6FADCCD7AB42A3E8 /* MainView.swift */; };
+		FA0D21CEA030CEA162A1A8E5 /* ReportExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49B2EDD49FAED31DA5B0670 /* ReportExportService.swift */; };
+		FD8A972B8FF2C2B804921778 /* MonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC0F48187EED938C42BF25F /* MonitorView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		51E37C6A466A6D511F43A02A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4F3929C789B7261F191A2CDE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6344813BB185934872BBD001;
+			remoteInfo = CodecLab;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0349C5EAB48F99D302B90B0C /* LegacyMP3ImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyMP3ImportService.swift; sourceTree = "<group>"; };
+		125C948B7AECBF755ED9FE1E /* ABXView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABXView.swift; sourceTree = "<group>"; };
+		18D660D777C5C6F93FA18009 /* EncoderAvailabilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncoderAvailabilityService.swift; sourceTree = "<group>"; };
+		21A67AFA25643091F72E2958 /* EncoderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncoderType.swift; sourceTree = "<group>"; };
+		23272977E05E49BC923D9A96 /* CodecLabStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodecLabStyle.swift; sourceTree = "<group>"; };
+		2458FC32B80C2D5FBC7B0A27 /* TestReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestReport.swift; sourceTree = "<group>"; };
+		31CC3CE56B3C3C5F82B9E27F /* DropZoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropZoneView.swift; sourceTree = "<group>"; };
+		3B140E03139EBE01EEB86C8D /* CodecLabApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodecLabApp.swift; sourceTree = "<group>"; };
+		3BB3BAE5682D345AC31142BA /* FFprobeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFprobeService.swift; sourceTree = "<group>"; };
+		3D07C45255E9EE3327B1A726 /* AudioImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioImportService.swift; sourceTree = "<group>"; };
+		4389B229C37BF435635BC797 /* CodecFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodecFormat.swift; sourceTree = "<group>"; };
+		45A339F46A59BC6EB41D2408 /* MonitorDownmixService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorDownmixService.swift; sourceTree = "<group>"; };
+		45BE630B5F84FE56C5D06DA0 /* EncoderStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncoderStatusView.swift; sourceTree = "<group>"; };
+		4D7548BD2AB51DE1218D5F11 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		50FF93A0ABFC8AB2BDB1D41C /* CodecLabTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodecLabTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5860CF0428A5F50030214879 /* EncodeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeSettings.swift; sourceTree = "<group>"; };
+		5A4CBD8C4CA5148B62A42EF8 /* ABXSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABXSession.swift; sourceTree = "<group>"; };
+		5E3D529728832EB1BF311F91 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		6045C86A14D8C2AD79C62E1F /* LoopRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoopRegion.swift; sourceTree = "<group>"; };
+		745AE1769AF1D40C530CBC39 /* ExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportView.swift; sourceTree = "<group>"; };
+		74A91834491A4F17AFE0045B /* TestRegionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRegionView.swift; sourceTree = "<group>"; };
+		82062888EEFBA81965A651A7 /* FFmpegService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegService.swift; sourceTree = "<group>"; };
+		84A3E4A3295EFAC1EBB822E3 /* CodecLabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodecLabViewModel.swift; sourceTree = "<group>"; };
+		87AA065572C4FBA9927808CB /* ABXService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABXService.swift; sourceTree = "<group>"; };
+		8CF19A7D5EA345C169A6BD6E /* AudioFileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileInfo.swift; sourceTree = "<group>"; };
+		8D9C94F4A7DA89C474B11621 /* ABXServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABXServiceTests.swift; sourceTree = "<group>"; };
+		903BEF56395E211B18B627E5 /* CodecPresetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodecPresetView.swift; sourceTree = "<group>"; };
+		9CD64864C538CE0541EFBA50 /* FileInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfoView.swift; sourceTree = "<group>"; };
+		9E117814016AC62A0ADEF2AD /* EncoderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncoderService.swift; sourceTree = "<group>"; };
+		9FB7167001B765A982EBC778 /* AlignmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignmentService.swift; sourceTree = "<group>"; };
+		B2AD24D5150A241E8BBFC4FD /* TestRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRegion.swift; sourceTree = "<group>"; };
+		B65D60003EDC9195EE5A7344 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		B9F3A450E3F2B7762A232545 /* PlaybackBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackBuffer.swift; sourceTree = "<group>"; };
+		BA71847137A75696E65524E5 /* MultichannelBufferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultichannelBufferService.swift; sourceTree = "<group>"; };
+		BADE0C7031BD37DAA17B3C70 /* CodecPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodecPreset.swift; sourceTree = "<group>"; };
+		BB9038F7CA6DDD9EBC945CCB /* CodecLab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodecLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD7FEF9462EB05D46B65DBD7 /* AlignmentServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignmentServiceTests.swift; sourceTree = "<group>"; };
+		C3392D65661DA9B922751A1A /* WAVExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WAVExportService.swift; sourceTree = "<group>"; };
+		C530F1E5E86B5BFF24F7A4D9 /* NullTestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullTestService.swift; sourceTree = "<group>"; };
+		CA9A611BBE8D317CAA7FF0E6 /* AudioDecodeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDecodeService.swift; sourceTree = "<group>"; };
+		D32B34D958B139DFD4E90857 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		D49B2EDD49FAED31DA5B0670 /* ReportExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportExportService.swift; sourceTree = "<group>"; };
+		D6CAC84E6FADCCD7AB42A3E8 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		F0D9D2FA1AE880F019C6B70F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F5C01031FA805322BA00BFFC /* AudioPlaybackEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlaybackEngine.swift; sourceTree = "<group>"; };
+		FDC0F48187EED938C42BF25F /* MonitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorView.swift; sourceTree = "<group>"; };
+		FE5FF39A7D067C31A2B83874 /* NullTestResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullTestResult.swift; sourceTree = "<group>"; };
+		FE9AFA64F11DAFC10CDBD07D /* NullTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullTestView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		2E9DE9220C313B4854270DAD /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				125C948B7AECBF755ED9FE1E /* ABXView.swift */,
+				23272977E05E49BC923D9A96 /* CodecLabStyle.swift */,
+				903BEF56395E211B18B627E5 /* CodecPresetView.swift */,
+				31CC3CE56B3C3C5F82B9E27F /* DropZoneView.swift */,
+				45BE630B5F84FE56C5D06DA0 /* EncoderStatusView.swift */,
+				745AE1769AF1D40C530CBC39 /* ExportView.swift */,
+				9CD64864C538CE0541EFBA50 /* FileInfoView.swift */,
+				D6CAC84E6FADCCD7AB42A3E8 /* MainView.swift */,
+				FDC0F48187EED938C42BF25F /* MonitorView.swift */,
+				FE9AFA64F11DAFC10CDBD07D /* NullTestView.swift */,
+				5E3D529728832EB1BF311F91 /* SettingsView.swift */,
+				74A91834491A4F17AFE0045B /* TestRegionView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6918ACA0FB27FF86B62759BC /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				87AA065572C4FBA9927808CB /* ABXService.swift */,
+				9FB7167001B765A982EBC778 /* AlignmentService.swift */,
+				CA9A611BBE8D317CAA7FF0E6 /* AudioDecodeService.swift */,
+				3D07C45255E9EE3327B1A726 /* AudioImportService.swift */,
+				84A3E4A3295EFAC1EBB822E3 /* CodecLabViewModel.swift */,
+				18D660D777C5C6F93FA18009 /* EncoderAvailabilityService.swift */,
+				9E117814016AC62A0ADEF2AD /* EncoderService.swift */,
+				82062888EEFBA81965A651A7 /* FFmpegService.swift */,
+				3BB3BAE5682D345AC31142BA /* FFprobeService.swift */,
+				0349C5EAB48F99D302B90B0C /* LegacyMP3ImportService.swift */,
+				BA71847137A75696E65524E5 /* MultichannelBufferService.swift */,
+				C530F1E5E86B5BFF24F7A4D9 /* NullTestService.swift */,
+				D49B2EDD49FAED31DA5B0670 /* ReportExportService.swift */,
+				C3392D65661DA9B922751A1A /* WAVExportService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		76CF9ECD4CB863957D0CAD57 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BB9038F7CA6DDD9EBC945CCB /* CodecLab.app */,
+				50FF93A0ABFC8AB2BDB1D41C /* CodecLabTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8BE7664180D478F06B3ECE4A /* LICENSES */ = {
+			isa = PBXGroup;
+			children = (
+				D32B34D958B139DFD4E90857 /* README.md */,
+			);
+			path = LICENSES;
+			sourceTree = "<group>";
+		};
+		93E78A1B1B3883E006B6B75D = {
+			isa = PBXGroup;
+			children = (
+				F2069F6547A08EB66E24BFBE /* CodecLab */,
+				E846DE41C489A29242C2A278 /* CodecLabTests */,
+				76CF9ECD4CB863957D0CAD57 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D2A3A723E88ED8E85C33E897 /* Playback */ = {
+			isa = PBXGroup;
+			children = (
+				F5C01031FA805322BA00BFFC /* AudioPlaybackEngine.swift */,
+				6045C86A14D8C2AD79C62E1F /* LoopRegion.swift */,
+				45A339F46A59BC6EB41D2408 /* MonitorDownmixService.swift */,
+				B9F3A450E3F2B7762A232545 /* PlaybackBuffer.swift */,
+			);
+			path = Playback;
+			sourceTree = "<group>";
+		};
+		E846DE41C489A29242C2A278 /* CodecLabTests */ = {
+			isa = PBXGroup;
+			children = (
+				8D9C94F4A7DA89C474B11621 /* ABXServiceTests.swift */,
+				BD7FEF9462EB05D46B65DBD7 /* AlignmentServiceTests.swift */,
+				B65D60003EDC9195EE5A7344 /* Info.plist */,
+			);
+			path = CodecLabTests;
+			sourceTree = "<group>";
+		};
+		EC6D3C80DA3AF66C86C1A349 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5A4CBD8C4CA5148B62A42EF8 /* ABXSession.swift */,
+				8CF19A7D5EA345C169A6BD6E /* AudioFileInfo.swift */,
+				4389B229C37BF435635BC797 /* CodecFormat.swift */,
+				BADE0C7031BD37DAA17B3C70 /* CodecPreset.swift */,
+				21A67AFA25643091F72E2958 /* EncoderType.swift */,
+				5860CF0428A5F50030214879 /* EncodeSettings.swift */,
+				FE5FF39A7D067C31A2B83874 /* NullTestResult.swift */,
+				B2AD24D5150A241E8BBFC4FD /* TestRegion.swift */,
+				2458FC32B80C2D5FBC7B0A27 /* TestReport.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F2069F6547A08EB66E24BFBE /* CodecLab */ = {
+			isa = PBXGroup;
+			children = (
+				F0D9D2FA1AE880F019C6B70F /* Assets.xcassets */,
+				3B140E03139EBE01EEB86C8D /* CodecLabApp.swift */,
+				4D7548BD2AB51DE1218D5F11 /* Info.plist */,
+				EC6D3C80DA3AF66C86C1A349 /* Models */,
+				D2A3A723E88ED8E85C33E897 /* Playback */,
+				FA2C5A2476158D5B9E1B54AE /* Resources */,
+				6918ACA0FB27FF86B62759BC /* Services */,
+				2E9DE9220C313B4854270DAD /* Views */,
+			);
+			path = CodecLab;
+			sourceTree = "<group>";
+		};
+		FA2C5A2476158D5B9E1B54AE /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8BE7664180D478F06B3ECE4A /* LICENSES */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6344813BB185934872BBD001 /* CodecLab */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7FBA39A18086EFE8D246BF5C /* Build configuration list for PBXNativeTarget "CodecLab" */;
+			buildPhases = (
+				E10879F623806BA5F98F6F97 /* Sources */,
+				73CF0323D2567ADCF8D9514B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CodecLab;
+			packageProductDependencies = (
+			);
+			productName = CodecLab;
+			productReference = BB9038F7CA6DDD9EBC945CCB /* CodecLab.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BD712D90AB24E801E62A5BE0 /* CodecLabTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B99C1E3424AE8EF5A27E837A /* Build configuration list for PBXNativeTarget "CodecLabTests" */;
+			buildPhases = (
+				FDE1C420BE6C397A11FF111C /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8BB3E0344FCB3720F3A423DD /* PBXTargetDependency */,
+			);
+			name = CodecLabTests;
+			packageProductDependencies = (
+			);
+			productName = CodecLabTests;
+			productReference = 50FF93A0ABFC8AB2BDB1D41C /* CodecLabTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4F3929C789B7261F191A2CDE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					6344813BB185934872BBD001 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 35E817DBAB7CE1592826DDAA /* Build configuration list for PBXProject "CodecLab" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 93E78A1B1B3883E006B6B75D;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 76CF9ECD4CB863957D0CAD57 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6344813BB185934872BBD001 /* CodecLab */,
+				BD712D90AB24E801E62A5BE0 /* CodecLabTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		73CF0323D2567ADCF8D9514B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD27B4121A5AB099F891635F /* Assets.xcassets in Resources */,
+				DA30EFFA524E85E0A5B81B47 /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E10879F623806BA5F98F6F97 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B2A9FE466C84A69D75B38E10 /* ABXService.swift in Sources */,
+				CE741F6AE8B381BBDDE02E7B /* ABXSession.swift in Sources */,
+				80754FD1B0F2D1B661EBEA1E /* ABXView.swift in Sources */,
+				71B07A762B728AA762E25338 /* AlignmentService.swift in Sources */,
+				E850B72AC14421B22DC9F523 /* AudioDecodeService.swift in Sources */,
+				7B862FF5A80259386B7A116E /* AudioFileInfo.swift in Sources */,
+				2F42A1D3736734F824DD7F41 /* AudioImportService.swift in Sources */,
+				CCC75C2BDCEED7802D8B5C86 /* AudioPlaybackEngine.swift in Sources */,
+				961DD8832E619BFDB30AE581 /* CodecFormat.swift in Sources */,
+				B4641BA5072AC502700241AA /* CodecLabApp.swift in Sources */,
+				0D31E7255B3F9C78651E3E41 /* CodecLabStyle.swift in Sources */,
+				1F19D892FB31BB1F9FF73F37 /* CodecLabViewModel.swift in Sources */,
+				F6DAECAD2D9BE0A64F95A496 /* CodecPreset.swift in Sources */,
+				42AA97164FA9E2D047B5B2A5 /* CodecPresetView.swift in Sources */,
+				B77BC3B0D6F3494B4D13B4CF /* DropZoneView.swift in Sources */,
+				EC32457115D585C89606B4DD /* EncodeSettings.swift in Sources */,
+				8AE600F972A4660BD7CD2857 /* EncoderAvailabilityService.swift in Sources */,
+				1568B8D671E854FAD31A43C3 /* EncoderService.swift in Sources */,
+				AD4FC28CCE782245671EFE2A /* EncoderStatusView.swift in Sources */,
+				2FFF1C9850D9988C28743AB7 /* EncoderType.swift in Sources */,
+				A7062763A5C16FB6D3BF3926 /* ExportView.swift in Sources */,
+				313C47EE26B5C344FC853F45 /* FFmpegService.swift in Sources */,
+				903262BE403A4F360C8B6D5D /* FFprobeService.swift in Sources */,
+				C499D3E645F8904371516111 /* FileInfoView.swift in Sources */,
+				7CA794B90A4A3DAF6D522F68 /* LegacyMP3ImportService.swift in Sources */,
+				99818D407477A2B12FF7FB06 /* LoopRegion.swift in Sources */,
+				F769E3CDBE4B6753EF67F65A /* MainView.swift in Sources */,
+				50865B491FEF4C65B3BEC9BC /* MonitorDownmixService.swift in Sources */,
+				FD8A972B8FF2C2B804921778 /* MonitorView.swift in Sources */,
+				B072479FDFE8F807AD51F08B /* MultichannelBufferService.swift in Sources */,
+				83BF7671C69E5E390EFF2083 /* NullTestResult.swift in Sources */,
+				8BB69382C10DE027229AC381 /* NullTestService.swift in Sources */,
+				58A5F92B0726E40261F346E4 /* NullTestView.swift in Sources */,
+				7BADFF0AFD84E433366BE05C /* PlaybackBuffer.swift in Sources */,
+				FA0D21CEA030CEA162A1A8E5 /* ReportExportService.swift in Sources */,
+				A01022FDC22FCD811A062E9F /* SettingsView.swift in Sources */,
+				A6F9C8B65145F8E5042B25BA /* TestRegion.swift in Sources */,
+				3A712C28FFDB929AF6072ACE /* TestRegionView.swift in Sources */,
+				017598AA455BB52F80C1DCEA /* TestReport.swift in Sources */,
+				4CB1293AB8D4DA326320971D /* WAVExportService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FDE1C420BE6C397A11FF111C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B89845D4E304D13B1123B5A5 /* ABXServiceTests.swift in Sources */,
+				0A7EE77A49A87F88436E6F9C /* AlignmentServiceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8BB3E0344FCB3720F3A423DD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6344813BB185934872BBD001 /* CodecLab */;
+			targetProxy = 51E37C6A466A6D511F43A02A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		015B4134B8DA20EF25B0EB89 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		2C3A0757FD3CBA5EB982B972 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = CodecLabTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypo.CodecLabTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CodecLab.app/Contents/MacOS/CodecLab";
+			};
+			name = Release;
+		};
+		7084DD736FBB47E2F714C1B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = CodecLab/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypo.CodecLab;
+				PRODUCT_NAME = CodecLab;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		D7D27201B3C62DC3650FCBF4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = CodecLab/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypo.CodecLab;
+				PRODUCT_NAME = CodecLab;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E66BFF425655F9BC6751A520 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = CodecLabTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ypo.CodecLabTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CodecLab.app/Contents/MacOS/CodecLab";
+			};
+			name = Debug;
+		};
+		ED0444C3BDF58F51445942FE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		35E817DBAB7CE1592826DDAA /* Build configuration list for PBXProject "CodecLab" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED0444C3BDF58F51445942FE /* Debug */,
+				015B4134B8DA20EF25B0EB89 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7FBA39A18086EFE8D246BF5C /* Build configuration list for PBXNativeTarget "CodecLab" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D7D27201B3C62DC3650FCBF4 /* Debug */,
+				7084DD736FBB47E2F714C1B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B99C1E3424AE8EF5A27E837A /* Build configuration list for PBXNativeTarget "CodecLabTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E66BFF425655F9BC6751A520 /* Debug */,
+				2C3A0757FD3CBA5EB982B972 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4F3929C789B7261F191A2CDE /* Project object */;
+}

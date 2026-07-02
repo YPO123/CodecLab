@@ -1,0 +1,15 @@
+.DS_Store
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+.build/
+*.moved-aside
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.xcresult
+CodecLab/Resources/ffmpeg
+CodecLab/Resources/ffprobe
+tmp/
+
