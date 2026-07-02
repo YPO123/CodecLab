@@ -17,7 +17,7 @@ struct AudioImportService {
         if let info = try readWithAVAudioFile(url: url) {
             return info
         }
-        return try readFallbackAssetInfo(url: url)
+        return try await readFallbackAssetInfo(url: url)
     }
 
     private func readWithAVAudioFile(url: URL) throws -> AudioFileInfo? {
@@ -48,9 +48,10 @@ struct AudioImportService {
         }
     }
 
-    private func readFallbackAssetInfo(url: URL) throws -> AudioFileInfo {
+    private func readFallbackAssetInfo(url: URL) async throws -> AudioFileInfo {
         let asset = AVURLAsset(url: url)
-        let duration = CMTimeGetSeconds(asset.duration)
+        let durationTime = (try? await asset.load(.duration)) ?? .zero
+        let duration = CMTimeGetSeconds(durationTime)
         let ext = url.pathExtension.lowercased()
         guard !ext.isEmpty else { throw AudioImportError.unsupportedFile(url) }
 
@@ -132,4 +133,3 @@ struct AudioImportService {
         ["mp3", "aac", "m4a", "mp4", "mov", "opus"].contains(url.pathExtension.lowercased())
     }
 }
-

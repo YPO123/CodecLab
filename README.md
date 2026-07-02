@@ -18,9 +18,11 @@ This repository currently contains the first SwiftUI prototype:
 - Metadata display for sample rate, bit depth, channel count, duration, codec, and lossy source warnings
 - 10/15/30/60 second test region selection
 - FFmpeg diagnostics with `libmp3lame`, AAC, and Opus availability checks
-- Current MP3 generation through `libmp3lame`
+- Plugin-style codec audition rail with Lossless A vs Lossy B monitoring
+- MP3 / AAC / Opus lossy monitor rendering from the same rail
+- Bitrate slider for freeform codec combinations instead of fixed presets
 - Legacy MP3 import and decode path
-- Original / Current MP3 / Legacy MP3 playback switching through `AVAudioEngine`
+- Synchronized multi-node playback switching through `AVAudioEngine`
 - Null-test and ABX service foundations
 
 ## Why "Current MP3"?
@@ -48,4 +50,3 @@ xcodebuild -scheme CodecLab -configuration Debug -destination 'platform=macOS' C
 CodecLab source code is released under the MIT License.
 
 FFmpeg and codec libraries have their own licenses. Release builds that bundle FFmpeg must include the relevant license notices and configure flags under `CodecLab/Resources/LICENSES`.
-

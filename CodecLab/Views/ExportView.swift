@@ -9,7 +9,7 @@ struct ExportView: View {
                 .font(.system(size: 14, weight: .semibold))
 
             VStack(spacing: 8) {
-                exportRow("Encoded", enabled: model.currentArtifacts != nil)
+                exportRow("Encoded", enabled: model.renderedArtifacts != nil)
                 exportRow("Difference WAV", enabled: model.nullTestResult?.differenceFileURL != nil)
                 exportRow("HTML Report", enabled: model.referenceInfo != nil)
                 exportRow("JSON Report", enabled: model.referenceInfo != nil)
@@ -29,4 +29,3 @@ struct ExportView: View {
         .padding(.vertical, 2)
     }
 }
-

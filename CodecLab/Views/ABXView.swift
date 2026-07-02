@@ -15,7 +15,7 @@ struct ABXView: View {
                 } label: {
                     Label("10", systemImage: "play.circle")
                 }
-                .disabled(model.currentArtifacts == nil)
+                .disabled(model.renderedArtifacts == nil)
             }
 
             if let session = abxService.session {
@@ -42,7 +42,7 @@ struct ABXView: View {
                     MetricRow(label: "p-value", value: String(format: "%.4f", ABXService.pValue(correct: session.correctCount, total: max(session.completedCount, 1))))
                 }
             } else {
-                Text("Generate Current MP3 to start")
+                Text("Render a lossy monitor to start")
                     .font(.system(size: 12))
                     .foregroundStyle(CodecLabStyle.secondaryText)
             }
@@ -77,4 +77,3 @@ private extension Array {
         indices.contains(index) ? self[index] : nil
     }
 }
-

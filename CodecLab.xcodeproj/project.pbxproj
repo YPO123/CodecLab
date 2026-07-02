@@ -16,11 +16,11 @@
 		2FFF1C9850D9988C28743AB7 /* EncoderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A67AFA25643091F72E2958 /* EncoderType.swift */; };
 		313C47EE26B5C344FC853F45 /* FFmpegService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82062888EEFBA81965A651A7 /* FFmpegService.swift */; };
 		3A712C28FFDB929AF6072ACE /* TestRegionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74A91834491A4F17AFE0045B /* TestRegionView.swift */; };
-		42AA97164FA9E2D047B5B2A5 /* CodecPresetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903BEF56395E211B18B627E5 /* CodecPresetView.swift */; };
 		4CB1293AB8D4DA326320971D /* WAVExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3392D65661DA9B922751A1A /* WAVExportService.swift */; };
 		50865B491FEF4C65B3BEC9BC /* MonitorDownmixService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A339F46A59BC6EB41D2408 /* MonitorDownmixService.swift */; };
 		58A5F92B0726E40261F346E4 /* NullTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE9AFA64F11DAFC10CDBD07D /* NullTestView.swift */; };
 		71B07A762B728AA762E25338 /* AlignmentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB7167001B765A982EBC778 /* AlignmentService.swift */; };
+		75321998BF7056DB9293D25E /* CodecAuditionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073355884EF19D149D65CB90 /* CodecAuditionView.swift */; };
 		7B862FF5A80259386B7A116E /* AudioFileInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF19A7D5EA345C169A6BD6E /* AudioFileInfo.swift */; };
 		7BADFF0AFD84E433366BE05C /* PlaybackBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3A450E3F2B7762A232545 /* PlaybackBuffer.swift */; };
 		7CA794B90A4A3DAF6D522F68 /* LegacyMP3ImportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0349C5EAB48F99D302B90B0C /* LegacyMP3ImportService.swift */; };
@@ -48,9 +48,9 @@
 		E850B72AC14421B22DC9F523 /* AudioDecodeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA9A611BBE8D317CAA7FF0E6 /* AudioDecodeService.swift */; };
 		EC32457115D585C89606B4DD /* EncodeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5860CF0428A5F50030214879 /* EncodeSettings.swift */; };
 		F6DAECAD2D9BE0A64F95A496 /* CodecPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = BADE0C7031BD37DAA17B3C70 /* CodecPreset.swift */; };
+		F7570B10C5AB26D1ACCEA220 /* CodecRailFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2590726C2B36897170F66C19 /* CodecRailFormat.swift */; };
 		F769E3CDBE4B6753EF67F65A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CAC84E6FADCCD7AB42A3E8 /* MainView.swift */; };
 		FA0D21CEA030CEA162A1A8E5 /* ReportExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49B2EDD49FAED31DA5B0670 /* ReportExportService.swift */; };
-		FD8A972B8FF2C2B804921778 /* MonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDC0F48187EED938C42BF25F /* MonitorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,11 +65,13 @@
 
 /* Begin PBXFileReference section */
 		0349C5EAB48F99D302B90B0C /* LegacyMP3ImportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyMP3ImportService.swift; sourceTree = "<group>"; };
+		073355884EF19D149D65CB90 /* CodecAuditionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodecAuditionView.swift; sourceTree = "<group>"; };
 		125C948B7AECBF755ED9FE1E /* ABXView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABXView.swift; sourceTree = "<group>"; };
 		18D660D777C5C6F93FA18009 /* EncoderAvailabilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncoderAvailabilityService.swift; sourceTree = "<group>"; };
 		21A67AFA25643091F72E2958 /* EncoderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncoderType.swift; sourceTree = "<group>"; };
 		23272977E05E49BC923D9A96 /* CodecLabStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodecLabStyle.swift; sourceTree = "<group>"; };
 		2458FC32B80C2D5FBC7B0A27 /* TestReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestReport.swift; sourceTree = "<group>"; };
+		2590726C2B36897170F66C19 /* CodecRailFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodecRailFormat.swift; sourceTree = "<group>"; };
 		31CC3CE56B3C3C5F82B9E27F /* DropZoneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropZoneView.swift; sourceTree = "<group>"; };
 		3B140E03139EBE01EEB86C8D /* CodecLabApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodecLabApp.swift; sourceTree = "<group>"; };
 		3BB3BAE5682D345AC31142BA /* FFprobeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFprobeService.swift; sourceTree = "<group>"; };
@@ -90,7 +92,6 @@
 		87AA065572C4FBA9927808CB /* ABXService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABXService.swift; sourceTree = "<group>"; };
 		8CF19A7D5EA345C169A6BD6E /* AudioFileInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFileInfo.swift; sourceTree = "<group>"; };
 		8D9C94F4A7DA89C474B11621 /* ABXServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABXServiceTests.swift; sourceTree = "<group>"; };
-		903BEF56395E211B18B627E5 /* CodecPresetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodecPresetView.swift; sourceTree = "<group>"; };
 		9CD64864C538CE0541EFBA50 /* FileInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileInfoView.swift; sourceTree = "<group>"; };
 		9E117814016AC62A0ADEF2AD /* EncoderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncoderService.swift; sourceTree = "<group>"; };
 		9FB7167001B765A982EBC778 /* AlignmentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlignmentService.swift; sourceTree = "<group>"; };
@@ -109,7 +110,6 @@
 		D6CAC84E6FADCCD7AB42A3E8 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		F0D9D2FA1AE880F019C6B70F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F5C01031FA805322BA00BFFC /* AudioPlaybackEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlaybackEngine.swift; sourceTree = "<group>"; };
-		FDC0F48187EED938C42BF25F /* MonitorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorView.swift; sourceTree = "<group>"; };
 		FE5FF39A7D067C31A2B83874 /* NullTestResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullTestResult.swift; sourceTree = "<group>"; };
 		FE9AFA64F11DAFC10CDBD07D /* NullTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullTestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -119,14 +119,13 @@
 			isa = PBXGroup;
 			children = (
 				125C948B7AECBF755ED9FE1E /* ABXView.swift */,
+				073355884EF19D149D65CB90 /* CodecAuditionView.swift */,
 				23272977E05E49BC923D9A96 /* CodecLabStyle.swift */,
-				903BEF56395E211B18B627E5 /* CodecPresetView.swift */,
 				31CC3CE56B3C3C5F82B9E27F /* DropZoneView.swift */,
 				45BE630B5F84FE56C5D06DA0 /* EncoderStatusView.swift */,
 				745AE1769AF1D40C530CBC39 /* ExportView.swift */,
 				9CD64864C538CE0541EFBA50 /* FileInfoView.swift */,
 				D6CAC84E6FADCCD7AB42A3E8 /* MainView.swift */,
-				FDC0F48187EED938C42BF25F /* MonitorView.swift */,
 				FE9AFA64F11DAFC10CDBD07D /* NullTestView.swift */,
 				5E3D529728832EB1BF311F91 /* SettingsView.swift */,
 				74A91834491A4F17AFE0045B /* TestRegionView.swift */,
@@ -209,6 +208,7 @@
 				8CF19A7D5EA345C169A6BD6E /* AudioFileInfo.swift */,
 				4389B229C37BF435635BC797 /* CodecFormat.swift */,
 				BADE0C7031BD37DAA17B3C70 /* CodecPreset.swift */,
+				2590726C2B36897170F66C19 /* CodecRailFormat.swift */,
 				21A67AFA25643091F72E2958 /* EncoderType.swift */,
 				5860CF0428A5F50030214879 /* EncodeSettings.swift */,
 				FE5FF39A7D067C31A2B83874 /* NullTestResult.swift */,
@@ -340,12 +340,13 @@
 				7B862FF5A80259386B7A116E /* AudioFileInfo.swift in Sources */,
 				2F42A1D3736734F824DD7F41 /* AudioImportService.swift in Sources */,
 				CCC75C2BDCEED7802D8B5C86 /* AudioPlaybackEngine.swift in Sources */,
+				75321998BF7056DB9293D25E /* CodecAuditionView.swift in Sources */,
 				961DD8832E619BFDB30AE581 /* CodecFormat.swift in Sources */,
 				B4641BA5072AC502700241AA /* CodecLabApp.swift in Sources */,
 				0D31E7255B3F9C78651E3E41 /* CodecLabStyle.swift in Sources */,
 				1F19D892FB31BB1F9FF73F37 /* CodecLabViewModel.swift in Sources */,
 				F6DAECAD2D9BE0A64F95A496 /* CodecPreset.swift in Sources */,
-				42AA97164FA9E2D047B5B2A5 /* CodecPresetView.swift in Sources */,
+				F7570B10C5AB26D1ACCEA220 /* CodecRailFormat.swift in Sources */,
 				B77BC3B0D6F3494B4D13B4CF /* DropZoneView.swift in Sources */,
 				EC32457115D585C89606B4DD /* EncodeSettings.swift in Sources */,
 				8AE600F972A4660BD7CD2857 /* EncoderAvailabilityService.swift in Sources */,
@@ -360,7 +361,6 @@
 				99818D407477A2B12FF7FB06 /* LoopRegion.swift in Sources */,
 				F769E3CDBE4B6753EF67F65A /* MainView.swift in Sources */,
 				50865B491FEF4C65B3BEC9BC /* MonitorDownmixService.swift in Sources */,
-				FD8A972B8FF2C2B804921778 /* MonitorView.swift in Sources */,
 				B072479FDFE8F807AD51F08B /* MultichannelBufferService.swift in Sources */,
 				83BF7671C69E5E390EFF2083 /* NullTestResult.swift in Sources */,
 				8BB69382C10DE027229AC381 /* NullTestService.swift in Sources */,

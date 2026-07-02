@@ -16,17 +16,17 @@ struct MainView: View {
                         FileInfoView(info: model.referenceInfo)
                         TestRegionView(model: model)
                     }
-                    .frame(width: 330)
+                    .frame(width: 300)
 
                     VStack(spacing: 16) {
-                        CodecPresetView(model: model)
-                        MonitorView(model: model, playbackEngine: model.playbackEngine)
+                        CodecAuditionView(model: model, playbackEngine: model.playbackEngine)
                         NullTestView(model: model)
+                        ABXView(model: model, abxService: model.abxService)
                     }
+                    .frame(minWidth: 560)
 
                     VStack(spacing: 16) {
                         EncoderStatusView(model: model)
-                        ABXView(model: model, abxService: model.abxService)
                         ExportView(model: model)
                         SettingsView(model: model)
                     }
@@ -79,4 +79,3 @@ struct MainView: View {
         .padding(.top, 18)
     }
 }
-

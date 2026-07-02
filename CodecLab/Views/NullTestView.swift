@@ -10,11 +10,11 @@ struct NullTestView: View {
                     .font(.system(size: 14, weight: .semibold))
                 Spacer()
                 Button {
-                    model.runNullTestForCurrentMP3()
+                    model.runNullTestForRenderedCodec()
                 } label: {
                     Label("Run", systemImage: "sum")
                 }
-                .disabled(model.currentArtifacts == nil)
+                .disabled(model.renderedArtifacts == nil)
             }
 
             if let result = model.nullTestResult {
@@ -58,4 +58,3 @@ struct NullTestView: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
-
