@@ -6,16 +6,27 @@ struct NullTestView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Label("Null Test", systemImage: "plus.forwardslash.minus")
+                Label("Null Test A - B", systemImage: "plus.forwardslash.minus")
                     .font(.system(size: 14, weight: .semibold))
                 Spacer()
                 Button {
-                    model.runNullTestForRenderedCodec()
+                    Task { await model.runNullTestForDeckSelection() }
                 } label: {
-                    Label("Run", systemImage: "sum")
+                    Label("Invert B", systemImage: "sum")
                 }
-                .disabled(model.renderedArtifacts == nil)
+                .disabled(!model.canRunDeckNullTest)
             }
+
+            HStack(spacing: 6) {
+                Text(model.deckDisplayName(.a))
+                    .foregroundStyle(CodecLabStyle.green)
+                Image(systemName: "minus")
+                    .foregroundStyle(CodecLabStyle.secondaryText)
+                Text(model.deckDisplayName(.b))
+                    .foregroundStyle(CodecLabStyle.accent)
+                Spacer()
+            }
+            .font(.system(size: 12, weight: .semibold, design: .monospaced))
 
             if let result = model.nullTestResult {
                 HStack(spacing: 12) {
@@ -33,7 +44,7 @@ struct NullTestView: View {
                     }
                 }
             } else {
-                Text("No residual calculated")
+                Text("No A/B residual calculated")
                     .font(.system(size: 12))
                     .foregroundStyle(CodecLabStyle.secondaryText)
             }

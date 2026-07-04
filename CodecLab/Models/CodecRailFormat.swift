@@ -1,53 +1,63 @@
 import Foundation
 
-enum CodecRailFormat: String, CaseIterable, Identifiable {
+enum CodecRailFormat: String, CaseIterable, Identifiable, Hashable {
+    case wav
     case mp3
-    case aac
-    case opus
-    case legacyMP3
+    case aacNew
+    case aacOld
 
     var id: String { rawValue }
 
     var label: String {
         switch self {
+        case .wav: return "WAV"
         case .mp3: return "MP3"
-        case .aac: return "AAC"
-        case .opus: return "Opus"
-        case .legacyMP3: return "Legacy MP3"
+        case .aacNew: return "AAC New"
+        case .aacOld: return "AAC Old"
         }
     }
 
     var shortLabel: String {
         switch self {
-        case .legacyMP3: return "Legacy"
+        case .aacNew: return "AAC New"
+        case .aacOld: return "AAC Old"
         default: return label
         }
     }
 
     var systemImage: String {
         switch self {
+        case .wav: return "waveform"
         case .mp3: return "bolt.horizontal.circle"
-        case .aac: return "sparkles"
-        case .opus: return "circle.hexagongrid"
-        case .legacyMP3: return "clock.arrow.circlepath"
+        case .aacNew: return "sparkles"
+        case .aacOld: return "clock.arrow.circlepath"
         }
     }
 
     var codecFormat: CodecFormat? {
         switch self {
+        case .wav: return .wav
         case .mp3: return .mp3
-        case .aac: return .aac
-        case .opus: return .opus
-        case .legacyMP3: return nil
+        case .aacNew: return .aac
+        case .aacOld: return nil
         }
     }
 
     var encoderType: EncoderType {
         switch self {
+        case .wav: return .pcm
         case .mp3: return .currentLAME
-        case .aac: return .ffmpegNativeAAC
-        case .opus: return .libopus
-        case .legacyMP3: return .legacyImportedMP3
+        case .aacNew: return .ffmpegNativeAAC
+        case .aacOld: return .legacyImportedAAC
+        }
+    }
+
+    var isRenderedVariant: Bool {
+        switch self {
+        case .mp3, .aacNew:
+            return true
+        case .wav, .aacOld:
+            return false
         }
     }
 }
@@ -63,4 +73,3 @@ struct RenderedCodecArtifacts: Equatable {
         settings.displayName
     }
 }
-

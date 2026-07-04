@@ -10,9 +10,9 @@ enum MonitorSource: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .original: return "Original"
-        case .currentMP3: return "Current MP3"
-        case .legacyMP3: return "Legacy MP3"
+        case .original: return "Deck A"
+        case .currentMP3: return "Deck B"
+        case .legacyMP3: return "Imported"
         case .difference: return "Difference"
         }
     }
@@ -20,7 +20,7 @@ enum MonitorSource: String, CaseIterable, Identifiable {
     var symbolName: String {
         switch self {
         case .original: return "waveform"
-        case .currentMP3: return "bolt.horizontal.circle"
+        case .currentMP3: return "switch.2"
         case .legacyMP3: return "clock.arrow.circlepath"
         case .difference: return "plusminus.circle"
         }
@@ -33,4 +33,3 @@ struct PlaybackBuffer: Identifiable, Equatable {
     let url: URL
     let displayName: String
 }
-

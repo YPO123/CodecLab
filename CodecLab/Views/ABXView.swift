@@ -15,8 +15,19 @@ struct ABXView: View {
                 } label: {
                     Label("10", systemImage: "play.circle")
                 }
-                .disabled(model.renderedArtifacts == nil)
+                .disabled(!model.selectedDecksReady)
             }
+
+            HStack(spacing: 6) {
+                Text(model.deckDisplayName(.a))
+                    .foregroundStyle(CodecLabStyle.green)
+                Text("/")
+                    .foregroundStyle(CodecLabStyle.secondaryText)
+                Text(model.deckDisplayName(.b))
+                    .foregroundStyle(CodecLabStyle.accent)
+                Spacer()
+            }
+            .font(.system(size: 12, weight: .semibold, design: .monospaced))
 
             if let session = abxService.session {
                 HStack(spacing: 8) {
@@ -42,7 +53,7 @@ struct ABXView: View {
                     MetricRow(label: "p-value", value: String(format: "%.4f", ABXService.pValue(correct: session.correctCount, total: max(session.completedCount, 1))))
                 }
             } else {
-                Text("Render a lossy monitor to start")
+                Text("Prepare A/B to start")
                     .font(.system(size: 12))
                     .foregroundStyle(CodecLabStyle.secondaryText)
             }

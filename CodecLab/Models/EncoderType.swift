@@ -3,6 +3,7 @@ import Foundation
 enum EncoderType: String, Codable, CaseIterable, Identifiable {
     case currentLAME
     case legacyImportedMP3
+    case legacyImportedAAC
     case ffmpegNativeAAC
     case libopus
     case appleAAC
@@ -15,6 +16,7 @@ enum EncoderType: String, Codable, CaseIterable, Identifiable {
         switch self {
         case .currentLAME: return "Current LAME"
         case .legacyImportedMP3: return "Legacy MP3 Import"
+        case .legacyImportedAAC: return "Old AAC Import"
         case .ffmpegNativeAAC: return "FFmpeg AAC"
         case .libopus: return "libopus"
         case .appleAAC: return "Apple AAC"
@@ -23,4 +25,3 @@ enum EncoderType: String, Codable, CaseIterable, Identifiable {
         }
     }
 }
-

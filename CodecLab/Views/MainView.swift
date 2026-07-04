@@ -14,7 +14,7 @@ struct MainView: View {
                     VStack(spacing: 16) {
                         DropZoneView(model: model)
                         FileInfoView(info: model.referenceInfo)
-                        TestRegionView(model: model)
+                        CodecLibraryView(model: model)
                     }
                     .frame(width: 300)
 

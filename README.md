@@ -1,6 +1,6 @@
 # CodecLab
 
-CodecLab is a free, offline macOS tool for codec comparison, ABX listening, and null-difference monitoring. It is designed for audio engineers, producers, teachers, students, podcast/video creators, and anyone who needs to decide whether MP3, AAC, or Opus encoding is audibly different from a reference file.
+CodecLab is a free, offline macOS tool for codec comparison, ABX listening, and null-difference monitoring. It is designed for audio engineers, producers, teachers, students, podcast/video creators, and anyone who needs to decide whether MP3, AAC, or WAV variants are audibly different from a reference file.
 
 The app is intentionally local-first:
 
@@ -16,16 +16,15 @@ This repository currently contains the first SwiftUI prototype:
 
 - Drag-and-drop or picker-based reference audio import
 - Metadata display for sample rate, bit depth, channel count, duration, codec, and lossy source warnings
-- 10/15/30/60 second test region selection
-- FFmpeg diagnostics with `libmp3lame`, AAC, and Opus availability checks
-- Plugin-style codec matrix rail with Lossless A vs Lossy B monitoring
-- MP3 / AAC / Opus lossy monitor rendering from the same rail
-- Matching format and bitrate rail controls for freeform codec combinations instead of fixed presets
-- Legacy MP3 import and decode path
+- FFmpeg diagnostics with `libmp3lame` and AAC availability checks
+- A/B codec deck with independent WAV, MP3, AAC New, and AAC Old selection
+- MP3 and AAC New rendering for full-file comparison
+- Matching bitrate rail controls for generated MP3/AAC variants
+- Old AAC import and decode path
 - Synchronized multi-node playback switching through `AVAudioEngine`
-- Null-test residual analysis with exportable Difference WAV output
+- Null-test residual analysis that computes A minus inverted B with exportable Difference WAV output
 - ABX service foundations
-- Export packages with encoded audio plus HTML and JSON reports
+- Export packages with selected A/B audio plus HTML and JSON reports
 
 ## Why "Current MP3"?
 

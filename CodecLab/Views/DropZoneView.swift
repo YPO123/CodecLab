@@ -22,7 +22,7 @@ struct DropZoneView: View {
                         .foregroundStyle(CodecLabStyle.accent)
                     Text("Drop Reference Audio")
                         .font(.system(size: 17, weight: .semibold))
-                    Text("WAV / AIFF / FLAC / MP3 / AAC / Opus")
+                    Text("WAV / AIFF / FLAC / MP3 / AAC")
                         .font(.system(size: 12))
                         .foregroundStyle(CodecLabStyle.secondaryText)
                 }
@@ -74,4 +74,3 @@ struct DropZoneView: View {
         return true
     }
 }
-

@@ -7,6 +7,27 @@ enum ABXSlot {
     case x
 }
 
+enum DeckSide: String, CaseIterable, Identifiable {
+    case a
+    case b
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .a: return "A"
+        case .b: return "B"
+        }
+    }
+
+    var playbackSource: MonitorSource {
+        switch self {
+        case .a: return .original
+        case .b: return .currentMP3
+        }
+    }
+}
+
 enum ExportPackageItem: String, CaseIterable, Identifiable, Hashable {
     case encodedMonitor
     case differenceWAV
@@ -17,7 +38,7 @@ enum ExportPackageItem: String, CaseIterable, Identifiable, Hashable {
 
     var label: String {
         switch self {
-        case .encodedMonitor: return "Encoded Monitor"
+        case .encodedMonitor: return "A/B Audio"
         case .differenceWAV: return "Difference WAV"
         case .htmlReport: return "HTML Report"
         case .jsonReport: return "JSON Report"
@@ -26,7 +47,7 @@ enum ExportPackageItem: String, CaseIterable, Identifiable, Hashable {
 
     var detail: String {
         switch self {
-        case .encodedMonitor: return "Current lossy file"
+        case .encodedMonitor: return "Selected deck sources"
         case .differenceWAV: return "Residual audio after Null Test"
         case .htmlReport: return "Readable listening report"
         case .jsonReport: return "Structured test data"
@@ -44,7 +65,7 @@ enum ExportPackageItem: String, CaseIterable, Identifiable, Hashable {
 
     var badge: String {
         switch self {
-        case .encodedMonitor: return "AUDIO"
+        case .encodedMonitor: return "A/B"
         case .differenceWAV: return "WAV"
         case .htmlReport: return "HTML"
         case .jsonReport: return "JSON"
@@ -66,6 +87,23 @@ enum ExportPackageError: LocalizedError {
     }
 }
 
+enum DeckPreparationError: LocalizedError {
+    case unavailable(String)
+    case missingOldAAC
+    case missingDeckAudio
+
+    var errorDescription: String? {
+        switch self {
+        case .unavailable(let codec):
+            return "\(codec) is not available with the current FFmpeg setup."
+        case .missingOldAAC:
+            return "Import an old AAC file before using AAC Old."
+        case .missingDeckAudio:
+            return "A/B deck audio is not ready yet."
+        }
+    }
+}
+
 @MainActor
 final class CodecLabViewModel: ObservableObject {
     @Published var referenceInfo: AudioFileInfo?
@@ -77,6 +115,9 @@ final class CodecLabViewModel: ObservableObject {
     @Published var legacyArtifacts: LegacyMP3Artifacts?
     @Published var nullTestResult: NullTestResult?
     @Published var selectedCodec: CodecRailFormat = .mp3
+    @Published var selectedDeckA: CodecRailFormat = .wav
+    @Published var selectedDeckB: CodecRailFormat = .aacNew
+    @Published var renderedArtifactsByCodec: [CodecRailFormat: RenderedCodecArtifacts] = [:]
     @Published var selectedBitrateKbps: Double = 320
     @Published var monitorMode: MonitorMode = .nativeMultichannel
     @Published var statusMessage = "Ready"
@@ -108,85 +149,74 @@ final class CodecLabViewModel: ObservableObject {
             self.referenceInfo = info
             self.currentArtifacts = nil
             self.renderedArtifacts = nil
+            self.renderedArtifactsByCodec = [:]
             self.nullTestResult = nil
             self.playbackEngine.setBuffer(PlaybackBuffer(source: .original, url: url, displayName: info.fileName))
+            self.updateDeckBuffers()
             self.statusMessage = "Reference loaded: \(info.fileName)"
         }
     }
 
     func importLegacyMP3(url: URL) async {
-        await performBusyOperation("Decoding legacy MP3...") { [self] in
+        await importLegacyAAC(url: url)
+    }
+
+    func importLegacyAAC(url: URL) async {
+        await performBusyOperation("Decoding old AAC...") { [self] in
             let info = try await self.audioImportService.readInfo(from: url)
             let artifacts = try await self.legacyImportService.decodeLegacyMP3(url, diagnostics: self.diagnostics)
             self.legacyInfo = info
             self.legacyArtifacts = artifacts
-            self.playbackEngine.setBuffer(PlaybackBuffer(source: .legacyMP3, url: artifacts.decodedWAVURL, displayName: info.fileName))
-            self.statusMessage = "Legacy MP3 decoded: \(info.fileName)"
+            self.resetComparisonResult()
+            self.updateDeckBuffers()
+            self.statusMessage = "Old AAC decoded: \(info.fileName)"
         }
     }
 
     func generateCurrentMP3() async {
-        selectCodec(.mp3)
-        await renderSelectedLossyMonitor()
+        select(.mp3, for: .b)
+        await prepareSelectedDecks()
     }
 
     func selectCodec(_ codec: CodecRailFormat) {
-        guard selectedCodec != codec else { return }
-        selectedCodec = codec
-        invalidateRenderedMonitor()
+        select(codec, for: .b)
+    }
+
+    func select(_ codec: CodecRailFormat, for side: DeckSide) {
+        switch side {
+        case .a:
+            guard selectedDeckA != codec else { return }
+            selectedDeckA = codec
+        case .b:
+            guard selectedDeckB != codec else { return }
+            selectedDeckB = codec
+        }
+        selectedCodec = selectedDeckB
+        resetComparisonResult()
+        updateDeckBuffers()
     }
 
     func selectBitrateKbps(_ bitrate: Int) {
         guard roundedBitrateKbps != bitrate else { return }
         selectedBitrateKbps = Double(bitrate)
-        invalidateRenderedMonitor()
+        invalidateRenderedCodecs()
     }
 
     func renderSelectedLossyMonitor() async {
+        await prepareSelectedDecks()
+    }
+
+    func prepareSelectedDecks() async {
         guard let referenceInfo else {
             statusMessage = "Load a reference audio file first."
             return
         }
 
-        guard let format = selectedCodec.codecFormat else {
-            statusMessage = "Import a legacy MP3 for the Legacy slot."
-            return
-        }
-
-        let bitrate = roundedBitrateKbps
-        let settings = EncodeSettings(
-            format: format,
-            encoder: selectedCodec.encoderType,
-            bitrateKbps: bitrate,
-            sampleRate: nil,
-            channels: nil,
-            downmixMode: nil
-        )
-
-        await performBusyOperation("Rendering \(selectedCodec.label) \(bitrate)k monitor...") { [self] in
-            let artifacts = try await self.encoderService.renderCodec(
-                referenceURL: referenceInfo.url,
-                region: self.boundedRegion(for: referenceInfo),
-                diagnostics: self.diagnostics,
-                settings: settings
-            )
-            self.renderedArtifacts = artifacts
-            if settings.format == .mp3 {
-                self.currentArtifacts = CurrentMP3Artifacts(
-                    workingDirectory: artifacts.workingDirectory,
-                    originalSegmentURL: artifacts.originalSegmentURL,
-                    encodedMP3URL: artifacts.encodedURL,
-                    decodedWAVURL: artifacts.decodedWAVURL,
-                    bitrateKbps: bitrate
-                )
-            } else {
-                self.currentArtifacts = nil
-            }
-            self.playbackEngine.setBuffers([
-                PlaybackBuffer(source: .original, url: artifacts.originalSegmentURL, displayName: "Original Segment"),
-                PlaybackBuffer(source: .currentMP3, url: artifacts.decodedWAVURL, displayName: "\(self.selectedCodec.label) \(bitrate)k")
-            ])
-            self.statusMessage = "\(self.selectedCodec.label) \(bitrate)k monitor ready."
+        await performBusyOperation("Preparing A/B deck...") { [self] in
+            try await self.prepareCodec(self.selectedDeckA, referenceInfo: referenceInfo)
+            try await self.prepareCodec(self.selectedDeckB, referenceInfo: referenceInfo)
+            self.updateDeckBuffers()
+            self.statusMessage = "A/B deck ready: \(self.deckDisplayName(.a)) vs \(self.deckDisplayName(.b))."
         }
     }
 
@@ -195,24 +225,38 @@ final class CodecLabViewModel: ObservableObject {
     }
 
     func runNullTestForRenderedCodec() {
-        guard let renderedArtifacts else {
-            statusMessage = "Render a lossy monitor before running Null Test."
+        Task { await runNullTestForDeckSelection() }
+    }
+
+    func runNullTestForDeckSelection() async {
+        guard let referenceInfo else {
+            statusMessage = "Load a reference audio file first."
             return
         }
 
-        do {
+        await performBusyOperation("Null testing \(deckDisplayName(.a)) against \(deckDisplayName(.b))...") { [self] in
+            try await self.prepareCodec(self.selectedDeckA, referenceInfo: referenceInfo)
+            try await self.prepareCodec(self.selectedDeckB, referenceInfo: referenceInfo)
+            self.updateDeckBuffers()
+
+            guard let aURL = self.playbackURL(for: self.selectedDeckA),
+                  let bURL = self.playbackURL(for: self.selectedDeckB) else {
+                throw ExportPackageError.noReadyItems
+            }
+
+            let outputURL = try self.makeComparisonDirectory()
+                .appendingPathComponent("CodecLab Difference A-minus-B.wav")
             let result = try nullTestService.analyze(
-                originalURL: renderedArtifacts.originalSegmentURL,
-                decodedURL: renderedArtifacts.decodedWAVURL,
-                differenceOutputURL: renderedArtifacts.workingDirectory.appendingPathComponent("CodecLab Difference.wav")
+                originalURL: aURL,
+                decodedURL: bURL,
+                differenceOutputURL: outputURL
             )
             nullTestResult = result
             if let differenceFileURL = result.differenceFileURL {
                 playbackEngine.setBuffer(PlaybackBuffer(source: .difference, url: differenceFileURL, displayName: "Difference WAV"))
+                self.play(.difference)
             }
-            statusMessage = "Null Test complete."
-        } catch {
-            statusMessage = error.localizedDescription
+            statusMessage = "Null Test complete: \(deckDisplayName(.a)) - \(deckDisplayName(.b))."
         }
     }
 
@@ -229,12 +273,12 @@ final class CodecLabViewModel: ObservableObject {
     }
 
     func startABX(totalTrials: Int = 10) {
-        guard renderedArtifacts != nil else {
-            statusMessage = "Render a lossy monitor before starting ABX."
+        guard selectedDecksReady else {
+            statusMessage = "Prepare the A/B deck before starting ABX."
             return
         }
         abxService.start(totalTrials: totalTrials)
-        statusMessage = "ABX started."
+        statusMessage = "ABX started: \(deckDisplayName(.a)) vs \(deckDisplayName(.b))."
     }
 
     func playABXSlot(_ slot: ABXSlot) {
@@ -263,10 +307,8 @@ final class CodecLabViewModel: ObservableObject {
     }
 
     func boundedRegion(for info: AudioFileInfo) -> TestRegion {
-        guard info.duration > 0 else { return region }
-        let duration = min(region.duration, info.duration)
-        let start = min(region.startTime, max(0, info.duration - duration))
-        return TestRegion(startTime: start, duration: duration)
+        guard info.duration.isFinite, info.duration > 0 else { return region }
+        return TestRegion(startTime: 0, duration: info.duration)
     }
 
     var roundedBitrateKbps: Int {
@@ -274,21 +316,18 @@ final class CodecLabViewModel: ObservableObject {
     }
 
     var lossyMonitorLabel: String {
-        if selectedCodec == .legacyMP3 {
-            return legacyInfo?.fileName ?? "Legacy MP3"
-        }
-        return "\(selectedCodec.label) \(roundedBitrateKbps)k"
+        deckDisplayName(.b)
     }
 
     var selectedCodecAvailable: Bool {
         switch selectedCodec {
+        case .wav:
+            return referenceInfo != nil
         case .mp3:
             return diagnostics.libmp3lameAvailable
-        case .aac:
+        case .aacNew:
             return diagnostics.aacAvailable
-        case .opus:
-            return diagnostics.libopusAvailable
-        case .legacyMP3:
+        case .aacOld:
             return diagnostics.ffmpegURL != nil
         }
     }
@@ -296,7 +335,7 @@ final class CodecLabViewModel: ObservableObject {
     func isExportItemReady(_ item: ExportPackageItem) -> Bool {
         switch item {
         case .encodedMonitor:
-            return renderedArtifacts != nil
+            return selectedDecksReady
         case .differenceWAV:
             return nullTestResult?.differenceFileURL != nil
         case .htmlReport, .jsonReport:
@@ -310,10 +349,10 @@ final class CodecLabViewModel: ObservableObject {
             createdAt: Date(),
             reference: referenceInfo,
             region: boundedRegion(for: referenceInfo),
-            encodeSettings: renderedArtifacts?.settings,
+            encodeSettings: renderedArtifactsByCodec[selectedDeckB]?.settings ?? renderedArtifacts?.settings,
             nullTestResult: nullTestResult,
             abxSession: abxService.session,
-            monitorMode: monitorMode.label,
+            monitorMode: "\(deckDisplayName(.a)) vs \(deckDisplayName(.b))",
             notes: nil
         )
     }
@@ -336,6 +375,92 @@ final class CodecLabViewModel: ObservableObject {
         return outputFolder
     }
 
+    var selectedDecksReady: Bool {
+        playbackURL(for: selectedDeckA) != nil && playbackURL(for: selectedDeckB) != nil
+    }
+
+    var canPrepareSelectedDecks: Bool {
+        referenceInfo != nil
+            && isCodecSelectable(selectedDeckA)
+            && isCodecSelectable(selectedDeckB)
+            && !isBusy
+    }
+
+    var canRunDeckNullTest: Bool {
+        canPrepareSelectedDecks
+            && (selectedDeckA != .aacOld || legacyArtifacts != nil)
+            && (selectedDeckB != .aacOld || legacyArtifacts != nil)
+    }
+
+    func selectedCodec(for side: DeckSide) -> CodecRailFormat {
+        switch side {
+        case .a: return selectedDeckA
+        case .b: return selectedDeckB
+        }
+    }
+
+    func deckDisplayName(_ side: DeckSide) -> String {
+        codecDisplayName(selectedCodec(for: side))
+    }
+
+    func deckDetail(_ side: DeckSide) -> String {
+        let codec = selectedCodec(for: side)
+        if isCodecReady(codec) {
+            return codecReadyDetail(codec)
+        }
+        switch codec {
+        case .wav:
+            return "Drop WAV"
+        case .mp3, .aacNew:
+            return "Render needed"
+        case .aacOld:
+            return "Import old AAC"
+        }
+    }
+
+    func isCodecReady(_ codec: CodecRailFormat) -> Bool {
+        playbackURL(for: codec) != nil
+    }
+
+    func isCodecSelectable(_ codec: CodecRailFormat) -> Bool {
+        switch codec {
+        case .wav:
+            return true
+        case .mp3:
+            return diagnostics.libmp3lameAvailable
+        case .aacNew:
+            return diagnostics.aacAvailable
+        case .aacOld:
+            return diagnostics.ffmpegURL != nil
+        }
+    }
+
+    func codecDisplayName(_ codec: CodecRailFormat) -> String {
+        switch codec {
+        case .wav:
+            return "WAV"
+        case .mp3:
+            return "MP3 \(roundedBitrateKbps)k"
+        case .aacNew:
+            return "AAC New \(roundedBitrateKbps)k"
+        case .aacOld:
+            return legacyInfo?.fileName ?? "AAC Old"
+        }
+    }
+
+    func codecReadyDetail(_ codec: CodecRailFormat) -> String {
+        switch codec {
+        case .wav:
+            return referenceInfo?.shortFormatSummary ?? "Reference ready"
+        case .mp3:
+            return "Rendered LAME"
+        case .aacNew:
+            return "Rendered FFmpeg AAC"
+        case .aacOld:
+            return "Imported and decoded"
+        }
+    }
+
     private func performBusyOperation(_ message: String, operation: @escaping () async throws -> Void) async {
         isBusy = true
         statusMessage = message
@@ -348,13 +473,123 @@ final class CodecLabViewModel: ObservableObject {
         }
     }
 
-    private func invalidateRenderedMonitor() {
-        currentArtifacts = nil
-        renderedArtifacts = nil
+    private func resetComparisonResult() {
         nullTestResult = nil
         abxService.reset()
-        playbackEngine.removeBuffer(for: .currentMP3)
         playbackEngine.removeBuffer(for: .difference)
+    }
+
+    private func invalidateRenderedCodecs() {
+        currentArtifacts = nil
+        renderedArtifacts = nil
+        renderedArtifactsByCodec[.mp3] = nil
+        renderedArtifactsByCodec[.aacNew] = nil
+        resetComparisonResult()
+        updateDeckBuffers()
+    }
+
+    private func prepareCodec(_ codec: CodecRailFormat, referenceInfo: AudioFileInfo) async throws {
+        guard isCodecSelectable(codec) else {
+            throw DeckPreparationError.unavailable(codec.label)
+        }
+
+        switch codec {
+        case .wav:
+            return
+
+        case .aacOld:
+            guard legacyArtifacts != nil else { throw DeckPreparationError.missingOldAAC }
+
+        case .mp3, .aacNew:
+            if renderedArtifactsByCodec[codec] != nil { return }
+            guard let format = codec.codecFormat else { throw DeckPreparationError.missingDeckAudio }
+
+            let bitrate = roundedBitrateKbps
+            let settings = EncodeSettings(
+                format: format,
+                encoder: codec.encoderType,
+                bitrateKbps: bitrate,
+                sampleRate: nil,
+                channels: nil,
+                downmixMode: nil
+            )
+
+            let artifacts = try await encoderService.renderCodec(
+                referenceURL: referenceInfo.url,
+                region: boundedRegion(for: referenceInfo),
+                diagnostics: diagnostics,
+                settings: settings
+            )
+            renderedArtifactsByCodec[codec] = artifacts
+            renderedArtifacts = artifacts
+
+            if codec == .mp3 {
+                currentArtifacts = CurrentMP3Artifacts(
+                    workingDirectory: artifacts.workingDirectory,
+                    originalSegmentURL: artifacts.originalSegmentURL,
+                    encodedMP3URL: artifacts.encodedURL,
+                    decodedWAVURL: artifacts.decodedWAVURL,
+                    bitrateKbps: bitrate
+                )
+            }
+        }
+    }
+
+    private func updateDeckBuffers() {
+        for side in DeckSide.allCases {
+            let codec = selectedCodec(for: side)
+            if let url = playbackURL(for: codec) {
+                playbackEngine.setBuffer(PlaybackBuffer(
+                    source: side.playbackSource,
+                    url: url,
+                    displayName: deckDisplayName(side)
+                ))
+            } else {
+                playbackEngine.removeBuffer(for: side.playbackSource)
+            }
+        }
+    }
+
+    private func playbackURL(for codec: CodecRailFormat) -> URL? {
+        switch codec {
+        case .wav:
+            return referenceInfo?.url
+        case .mp3, .aacNew:
+            return renderedArtifactsByCodec[codec]?.decodedWAVURL
+        case .aacOld:
+            return legacyArtifacts?.decodedWAVURL
+        }
+    }
+
+    private func exportSourceURL(for codec: CodecRailFormat) -> URL? {
+        switch codec {
+        case .wav:
+            return referenceInfo?.url
+        case .mp3, .aacNew:
+            return renderedArtifactsByCodec[codec]?.encodedURL
+        case .aacOld:
+            return legacyArtifacts?.sourceMP3URL ?? legacyArtifacts?.decodedWAVURL
+        }
+    }
+
+    private func exportDeckSource(_ side: DeckSide, baseName: String, to outputFolder: URL) throws {
+        let codec = selectedCodec(for: side)
+        guard let sourceURL = exportSourceURL(for: codec) else {
+            throw DeckPreparationError.missingDeckAudio
+        }
+
+        let displayName = safeFileName(codecDisplayName(codec).replacingOccurrences(of: " ", with: "-"))
+        let fileExtension = sourceURL.pathExtension.isEmpty ? "wav" : sourceURL.pathExtension
+        let destination = outputFolder.appendingPathComponent("\(baseName)-Deck-\(side.label)-\(displayName).\(fileExtension)")
+        try copyReplacingItem(at: sourceURL, to: destination)
+    }
+
+    private func makeComparisonDirectory() throws -> URL {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("CodecLab", isDirectory: true)
+            .appendingPathComponent("Comparison-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        return directory
     }
 
     private var exportBaseName: String {
@@ -373,13 +608,8 @@ final class CodecLabViewModel: ObservableObject {
     private func export(_ item: ExportPackageItem, baseName: String, to outputFolder: URL) throws {
         switch item {
         case .encodedMonitor:
-            guard let renderedArtifacts else { return }
-            let displayName = safeFileName(renderedArtifacts.displayName.replacingOccurrences(of: " ", with: "-"))
-            let fileExtension = renderedArtifacts.encodedURL.pathExtension.isEmpty
-                ? renderedArtifacts.settings.format.rawValue
-                : renderedArtifacts.encodedURL.pathExtension
-            let destination = outputFolder.appendingPathComponent("\(baseName)-\(displayName).\(fileExtension)")
-            try copyReplacingItem(at: renderedArtifacts.encodedURL, to: destination)
+            try exportDeckSource(.a, baseName: baseName, to: outputFolder)
+            try exportDeckSource(.b, baseName: baseName, to: outputFolder)
 
         case .differenceWAV:
             guard let differenceURL = nullTestResult?.differenceFileURL else { return }

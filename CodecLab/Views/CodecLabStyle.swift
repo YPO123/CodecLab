@@ -1,10 +1,10 @@
 import SwiftUI
 
 enum CodecLabStyle {
-    static let background = Color(red: 0.035, green: 0.038, blue: 0.050)
-    static let surface = Color(red: 0.075, green: 0.078, blue: 0.100)
-    static let surfaceRaised = Color(red: 0.105, green: 0.108, blue: 0.138)
-    static let stroke = Color.white.opacity(0.10)
+    static let background = Color(red: 0.026, green: 0.026, blue: 0.030)
+    static let surface = Color(red: 0.086, green: 0.084, blue: 0.094)
+    static let surfaceRaised = Color(red: 0.132, green: 0.126, blue: 0.142)
+    static let stroke = Color(red: 0.72, green: 0.72, blue: 0.78).opacity(0.16)
     static let primaryText = Color.white.opacity(0.92)
     static let secondaryText = Color.white.opacity(0.58)
     static let accent = Color(red: 0.34, green: 0.78, blue: 0.95)
@@ -48,4 +48,3 @@ struct MetricRow: View {
         .font(.system(size: 12))
     }
 }
-

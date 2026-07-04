@@ -4,59 +4,40 @@ import UniformTypeIdentifiers
 struct CodecAuditionView: View {
     @ObservedObject var model: CodecLabViewModel
     @ObservedObject var playbackEngine: AudioPlaybackEngine
-    @State private var isLegacyImporterPresented = false
-    private let bitrateSteps = [64, 96, 128, 160, 192, 256, 320]
+    @State private var isOldAACImporterPresented = false
+    private let bitrateSteps = [128, 160, 192, 256, 320]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .firstTextBaseline) {
-                Label("Codec Matrix Rail", systemImage: "slider.horizontal.below.rectangle")
-                    .font(.system(size: 15, weight: .semibold))
-                Spacer()
-                HStack(spacing: 8) {
-                    availabilityDot("MP3", model.diagnostics.libmp3lameAvailable)
-                    availabilityDot("AAC", model.diagnostics.aacAvailable)
-                    availabilityDot("Opus", model.diagnostics.libopusAvailable)
-                }
-            }
+            header
 
             HStack(spacing: 12) {
-                auditionPad(
-                    title: "A",
-                    subtitle: "Lossless Reference",
-                    detail: model.referenceInfo?.shortFormatSummary ?? "Drop source",
-                    symbol: "waveform",
-                    source: .original,
-                    color: CodecLabStyle.green
-                )
-
-                auditionPad(
-                    title: "B",
-                    subtitle: model.lossyMonitorLabel,
-                    detail: renderedDetail,
-                    symbol: model.selectedCodec.systemImage,
-                    source: model.selectedCodec == .legacyMP3 ? .legacyMP3 : .currentMP3,
-                    color: CodecLabStyle.accent
-                )
+                deckPad(.a, color: CodecLabStyle.green)
+                deckPad(.b, color: CodecLabStyle.accent)
             }
 
-            auditionControlRail
+            HStack(alignment: .top, spacing: 12) {
+                deckChooser(.a, color: CodecLabStyle.green)
+                deckChooser(.b, color: CodecLabStyle.accent)
+            }
+
+            bitrateRail
 
             HStack(spacing: 10) {
                 Button {
-                    Task { await model.renderSelectedLossyMonitor() }
+                    Task { await model.prepareSelectedDecks() }
                 } label: {
-                    Label("Render Monitor", systemImage: "waveform.path.ecg")
+                    Label("Prepare A/B", systemImage: "waveform.path.ecg")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(model.referenceInfo == nil || model.selectedCodec == .legacyMP3 || !model.selectedCodecAvailable || model.isBusy)
+                .disabled(!model.canPrepareSelectedDecks)
 
                 Button {
-                    isLegacyImporterPresented = true
+                    isOldAACImporterPresented = true
                 } label: {
-                    Label("Import Legacy", systemImage: "clock.arrow.circlepath")
-                        .frame(width: 130)
+                    Label("Import Old AAC", systemImage: "clock.arrow.circlepath")
+                        .frame(width: 150)
                 }
                 .buttonStyle(.bordered)
                 .disabled(model.referenceInfo == nil || model.diagnostics.ffmpegURL == nil || model.isBusy)
@@ -73,74 +54,58 @@ struct CodecAuditionView: View {
         }
         .codecPanel()
         .fileImporter(
-            isPresented: $isLegacyImporterPresented,
+            isPresented: $isOldAACImporterPresented,
             allowedContentTypes: [.audio],
             allowsMultipleSelection: false
         ) { result in
             if case .success(let urls) = result, let url = urls.first {
-                Task { await model.importLegacyMP3(url: url) }
+                Task { await model.importLegacyAAC(url: url) }
             }
         }
     }
 
-    private var auditionControlRail: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            controlRailRow(title: "Format", value: model.selectedCodec.label) {
-                HStack(spacing: 8) {
-                    controlTile(
-                        title: "Lossless",
-                        subtitle: "A",
-                        symbol: "waveform",
-                        selected: playbackEngine.activeSource == .original,
-                        enabled: playbackEngine.canPlay(.original),
-                        color: CodecLabStyle.green
-                    ) {
-                        model.play(.original)
-                    }
+    private var header: some View {
+        HStack(alignment: .firstTextBaseline) {
+            Label("A/B Codec Deck", systemImage: "switch.2")
+                .font(.system(size: 15, weight: .semibold))
+            Spacer()
+            HStack(spacing: 8) {
+                availabilityDot("MP3", model.diagnostics.libmp3lameAvailable)
+                availabilityDot("AAC", model.diagnostics.aacAvailable)
+                availabilityDot("Old", model.diagnostics.ffmpegURL != nil)
+            }
+        }
+    }
 
-                    ForEach(CodecRailFormat.allCases) { codec in
-                        controlTile(
-                            title: codec.shortLabel,
-                            subtitle: codecSubtitle(codec),
-                            symbol: codec.systemImage,
-                            selected: model.selectedCodec == codec,
-                            enabled: isRailCodecEnabled(codec),
-                            color: model.selectedCodec == codec ? CodecLabStyle.accent : CodecLabStyle.secondaryText
-                        ) {
-                            model.selectCodec(codec)
-                            if codec == .legacyMP3, playbackEngine.canPlay(.legacyMP3) {
-                                model.play(.legacyMP3)
-                            }
-                        }
-                    }
-                }
+    private var bitrateRail: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Bitrate")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(CodecLabStyle.secondaryText)
+                Spacer()
+                Text("\(model.roundedBitrateKbps) kbps")
+                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
             }
 
-            controlRailRow(title: "Bitrate", value: bitrateValue) {
-                HStack(spacing: 8) {
-                    ForEach(bitrateSteps, id: \.self) { bitrate in
-                        controlTile(
-                            title: "\(bitrate)",
-                            subtitle: "kbps",
-                            symbol: "speedometer",
-                            selected: model.selectedCodec != .legacyMP3 && model.roundedBitrateKbps == bitrate,
-                            enabled: model.selectedCodec != .legacyMP3,
-                            color: CodecLabStyle.amber
-                        ) {
-                            model.selectBitrateKbps(bitrate)
-                        }
+            HStack(spacing: 8) {
+                ForEach(bitrateSteps, id: \.self) { bitrate in
+                    codecButton(
+                        title: "\(bitrate)",
+                        subtitle: "kbps",
+                        symbol: "speedometer",
+                        selected: model.roundedBitrateKbps == bitrate,
+                        ready: true,
+                        enabled: !model.isBusy,
+                        color: CodecLabStyle.amber
+                    ) {
+                        model.selectBitrateKbps(bitrate)
                     }
                 }
             }
         }
         .padding(12)
-        .background(
-            LinearGradient(
-                colors: [CodecLabStyle.surfaceRaised, CodecLabStyle.surfaceRaised.opacity(0.72)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
+        .background(CodecLabStyle.surfaceRaised)
         .overlay(
             RoundedRectangle(cornerRadius: 8)
                 .stroke(CodecLabStyle.stroke, lineWidth: 1)
@@ -148,36 +113,29 @@ struct CodecAuditionView: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
-    private var renderedDetail: String {
-        if model.selectedCodec == .legacyMP3 {
-            return model.legacyArtifacts == nil ? "Import old MP3" : "Decoded and ready"
-        }
-        return model.renderedArtifacts == nil ? "Render monitor" : "Decoded PCM ready"
-    }
+    private func deckPad(_ side: DeckSide, color: Color) -> some View {
+        let codec = model.selectedCodec(for: side)
+        let active = playbackEngine.activeSource == side.playbackSource
+        let ready = model.isCodecReady(codec)
 
-    private var bitrateValue: String {
-        model.selectedCodec == .legacyMP3 ? "Source file" : "\(model.roundedBitrateKbps) kbps"
-    }
-
-    private func auditionPad(title: String, subtitle: String, detail: String, symbol: String, source: MonitorSource, color: Color) -> some View {
-        Button {
-            model.play(source)
+        return Button {
+            model.play(side.playbackSource)
         } label: {
             HStack(spacing: 14) {
-                Text(title)
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                Text(side.label)
+                    .font(.system(size: 36, weight: .bold, design: .rounded))
                     .frame(width: 46)
                     .foregroundStyle(color)
 
                 VStack(alignment: .leading, spacing: 5) {
                     HStack(spacing: 7) {
-                        Image(systemName: symbol)
-                        Text(subtitle)
+                        Image(systemName: codec.systemImage)
+                        Text(model.deckDisplayName(side))
                             .font(.system(size: 15, weight: .semibold))
                             .lineLimit(1)
-                            .minimumScaleFactor(0.75)
+                            .minimumScaleFactor(0.72)
                     }
-                    Text(detail)
+                    Text(model.deckDetail(side))
                         .font(.system(size: 11))
                         .foregroundStyle(CodecLabStyle.secondaryText)
                         .lineLimit(1)
@@ -185,88 +143,115 @@ struct CodecAuditionView: View {
 
                 Spacer()
 
-                if playbackEngine.activeSource == source {
-                    Image(systemName: "speaker.wave.2.fill")
-                        .foregroundStyle(color)
-                }
+                Image(systemName: active ? "speaker.wave.2.fill" : (ready ? "checkmark.circle.fill" : "circle.dashed"))
+                    .foregroundStyle(active ? color : (ready ? CodecLabStyle.green : CodecLabStyle.secondaryText))
             }
             .padding(14)
-            .frame(maxWidth: .infinity, minHeight: 90)
+            .frame(maxWidth: .infinity, minHeight: 96)
             .background(
                 LinearGradient(
-                    colors: playbackEngine.activeSource == source
-                        ? [color.opacity(0.20), CodecLabStyle.surfaceRaised]
-                        : [CodecLabStyle.surfaceRaised, CodecLabStyle.surfaceRaised.opacity(0.78)],
+                    colors: active
+                        ? [color.opacity(0.22), CodecLabStyle.surfaceRaised]
+                        : [CodecLabStyle.surfaceRaised, CodecLabStyle.surfaceRaised.opacity(0.76)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(playbackEngine.activeSource == source ? color.opacity(0.85) : CodecLabStyle.stroke, lineWidth: 1)
+                    .stroke(active ? color.opacity(0.92) : CodecLabStyle.stroke, lineWidth: active ? 1.4 : 1)
             )
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .buttonStyle(.plain)
-        .disabled(!playbackEngine.canPlay(source))
+        .disabled(!ready)
     }
 
-    private func controlRailRow<Content: View>(
-        title: String,
-        value: String,
-        @ViewBuilder content: () -> Content
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+    private func deckChooser(_ side: DeckSide, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text(title)
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(CodecLabStyle.secondaryText)
+                Text("Deck \(side.label)")
+                    .font(.system(size: 12, weight: .semibold))
                 Spacer()
-                Text(value)
-                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                Text(model.deckDisplayName(side))
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(color)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
             }
 
-            content()
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                ForEach(CodecRailFormat.allCases) { codec in
+                    codecButton(
+                        title: codec.shortLabel,
+                        subtitle: codecSubtitle(codec),
+                        symbol: codec.systemImage,
+                        selected: model.selectedCodec(for: side) == codec,
+                        ready: model.isCodecReady(codec),
+                        enabled: model.isCodecSelectable(codec) && !model.isBusy,
+                        color: model.selectedCodec(for: side) == codec ? color : CodecLabStyle.secondaryText
+                    ) {
+                        model.select(codec, for: side)
+                    }
+                }
+            }
         }
+        .padding(12)
+        .background(CodecLabStyle.surfaceRaised.opacity(0.88))
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(color.opacity(0.32), lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
-    private func controlTile(
+    private func codecButton(
         title: String,
         subtitle: String,
         symbol: String,
         selected: Bool,
+        ready: Bool,
         enabled: Bool,
         color: Color,
         action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
-            VStack(spacing: 5) {
-                HStack(spacing: 5) {
+            HStack(spacing: 8) {
+                ZStack {
+                    Circle()
+                        .fill(selected ? color.opacity(0.22) : CodecLabStyle.surface)
                     Image(systemName: symbol)
                         .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(enabled ? (selected ? color : CodecLabStyle.secondaryText) : CodecLabStyle.secondaryText.opacity(0.42))
+                        .foregroundStyle(enabled ? color : CodecLabStyle.secondaryText.opacity(0.42))
+                }
+                .frame(width: 28, height: 28)
+
+                VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(enabled ? CodecLabStyle.primaryText : CodecLabStyle.secondaryText.opacity(0.42))
                         .lineLimit(1)
                         .minimumScaleFactor(0.72)
-                        .foregroundStyle(enabled ? CodecLabStyle.primaryText : CodecLabStyle.secondaryText.opacity(0.42))
+                    Text(subtitle)
+                        .font(.system(size: 9, weight: .medium, design: .monospaced))
+                        .foregroundStyle(enabled ? CodecLabStyle.secondaryText : CodecLabStyle.secondaryText.opacity(0.42))
+                        .lineLimit(1)
                 }
 
-                Text(subtitle)
-                    .font(.system(size: 9, weight: .medium, design: .monospaced))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-                    .foregroundStyle(enabled ? CodecLabStyle.secondaryText : CodecLabStyle.secondaryText.opacity(0.42))
+                Spacer(minLength: 0)
+
+                Circle()
+                    .fill(ready ? CodecLabStyle.green : CodecLabStyle.secondaryText.opacity(0.42))
+                    .frame(width: 6, height: 6)
             }
+            .padding(.horizontal, 9)
             .frame(maxWidth: .infinity, minHeight: 54)
-            .padding(.horizontal, 6)
-            .background(selected ? color.opacity(0.16) : CodecLabStyle.surface.opacity(enabled ? 0.92 : 0.45))
+            .background(selected ? color.opacity(0.15) : CodecLabStyle.surface.opacity(enabled ? 0.92 : 0.44))
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(selected ? color.opacity(0.92) : CodecLabStyle.stroke, lineWidth: selected ? 1.2 : 1)
+                    .stroke(selected ? color.opacity(0.9) : CodecLabStyle.stroke, lineWidth: selected ? 1.2 : 1)
             )
             .clipShape(RoundedRectangle(cornerRadius: 8))
-            .shadow(color: selected ? color.opacity(0.12) : Color.clear, radius: 10, y: 4)
         }
         .buttonStyle(.plain)
         .disabled(!enabled)
@@ -283,29 +268,16 @@ struct CodecAuditionView: View {
         .foregroundStyle(CodecLabStyle.secondaryText)
     }
 
-    private func isRailCodecEnabled(_ codec: CodecRailFormat) -> Bool {
-        switch codec {
-        case .mp3:
-            return model.diagnostics.libmp3lameAvailable
-        case .aac:
-            return model.diagnostics.aacAvailable
-        case .opus:
-            return model.diagnostics.libopusAvailable
-        case .legacyMP3:
-            return model.diagnostics.ffmpegURL != nil
-        }
-    }
-
     private func codecSubtitle(_ codec: CodecRailFormat) -> String {
         switch codec {
+        case .wav:
+            return "source"
         case .mp3:
-            return "LAME"
-        case .aac:
-            return "Native"
-        case .opus:
-            return "Opus"
-        case .legacyMP3:
-            return "Import"
+            return "lame"
+        case .aacNew:
+            return "new"
+        case .aacOld:
+            return "old"
         }
     }
 }

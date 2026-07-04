@@ -21,8 +21,8 @@ struct EncoderStatusView: View {
             VStack(spacing: 8) {
                 MetricRow(label: "FFmpeg", value: model.diagnostics.ffmpegURL?.lastPathComponent ?? "Missing")
                 MetricRow(label: "libmp3lame", value: model.diagnostics.libmp3lameAvailable ? "available" : "unavailable")
-                MetricRow(label: "AAC", value: model.diagnostics.aacAvailable ? "available" : "unavailable")
-                MetricRow(label: "Opus", value: model.diagnostics.libopusAvailable ? "available" : "unavailable")
+                MetricRow(label: "AAC encode", value: model.diagnostics.aacAvailable ? "available" : "unavailable")
+                MetricRow(label: "AAC import", value: model.diagnostics.ffmpegURL != nil ? "available" : "unavailable")
             }
 
             Text(model.diagnostics.versionLine)
@@ -33,4 +33,3 @@ struct EncoderStatusView: View {
         .codecPanel()
     }
 }
-
